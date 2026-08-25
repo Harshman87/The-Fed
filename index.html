@@ -2188,6 +2188,232 @@
     /* MOBILE TAB SHELL — START
        Revert the tab layout by removing this CSS section and its marked HTML. */
     .mobile-tabbar { display: none; }
+    .home-dashboard { display: none; }
+
+    /* HOME TAB REDESIGN — START */
+    header::after {
+      content: "★\A◆\A★";
+      display: grid;
+      width: 154px;
+      height: 154px;
+      place-items: center;
+      color: rgba(215, 170, 62, .11);
+      background:
+        radial-gradient(circle, transparent 0 25%, rgba(215, 170, 62, .07) 26% 28%, transparent 29% 44%, rgba(215, 170, 62, .1) 45% 46%, transparent 47%),
+        repeating-conic-gradient(from 0deg, rgba(215, 170, 62, .08) 0 3deg, transparent 3deg 30deg);
+      border: 1px solid rgba(215, 170, 62, .16);
+      border-radius: 50%;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      line-height: 1.35;
+      white-space: pre;
+      text-align: center;
+      transform: rotate(-8deg);
+    }
+
+    #headerLeague {
+      color: #e8dfc6;
+      font-weight: 700;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, .8);
+    }
+
+    @media (max-width: 600px) {
+      header::after {
+        top: -24px;
+        right: -20px;
+        width: 118px;
+        height: 118px;
+        font-size: 15px;
+      }
+
+      #headerLeague { color: #f0e7cf; font-size: 12px; }
+
+      #homePanel > .snapshot-item { display: none; }
+
+      .home-dashboard { display: grid; gap: 10px; }
+
+      .home-leader-card,
+      .fed-wire,
+      .home-latest-ruling {
+        background: linear-gradient(150deg, #121714, #090d0b);
+        border: 1px solid #343d37;
+        border-radius: 11px;
+      }
+
+      .home-leader-card {
+        position: relative;
+        overflow: hidden;
+        padding: 15px;
+        border-color: rgba(215, 170, 62, .58);
+        box-shadow: inset 0 0 34px rgba(215, 170, 62, .035);
+      }
+
+      .home-leader-card::after {
+        content: "1";
+        position: absolute;
+        top: -28px;
+        right: 5px;
+        color: rgba(215, 170, 62, .055);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 126px;
+        line-height: 1;
+        pointer-events: none;
+      }
+
+      .home-leader-kicker,
+      .home-section-heading > span {
+        color: var(--gold);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+      }
+
+      .home-leader-button {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        width: 100%;
+        min-height: 62px;
+        margin: 5px 0 8px;
+        padding: 0;
+        grid-template-columns: 45px minmax(0, 1fr);
+        gap: 11px;
+        align-items: center;
+        color: inherit;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        text-align: left;
+      }
+
+      .home-leader-button:hover { background: rgba(215, 170, 62, .045); }
+
+      .home-leader-rank {
+        display: grid;
+        width: 43px;
+        height: 43px;
+        place-items: center;
+        color: #17140c;
+        background: linear-gradient(145deg, #f0d276, #b98524);
+        border: 1px solid #f3d987;
+        border-radius: 50%;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 24px;
+      }
+
+      .home-leader-identity { display: grid; gap: 4px; min-width: 0; }
+
+      .home-leader-identity strong {
+        overflow: hidden;
+        color: #f3f0e7;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 23px;
+        font-weight: 500;
+        line-height: 1.05;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .home-leader-identity span { color: #aaa9a3; font-size: 11px; }
+
+      .home-leader-badges { position: relative; z-index: 1; display: flex; gap: 6px; flex-wrap: wrap; }
+
+      .home-leader-badge {
+        display: inline-flex;
+        max-width: 100%;
+        min-height: 28px;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 8px;
+        color: #dfc777;
+        background: rgba(215, 170, 62, .08);
+        border: 1px solid rgba(215, 170, 62, .32);
+        border-radius: 999px;
+        font-size: 9px;
+      }
+
+      .fed-wire {
+        display: grid;
+        min-height: 42px;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .fed-wire-label {
+        position: relative;
+        z-index: 2;
+        align-self: stretch;
+        display: grid;
+        padding: 0 10px;
+        place-items: center;
+        color: #17140c;
+        background: var(--gold);
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+
+      .fed-wire-window { min-width: 0; overflow: hidden; }
+
+      .fed-wire-track {
+        display: flex;
+        width: max-content;
+        align-items: center;
+        animation: fed-wire-scroll 42s linear infinite;
+      }
+
+      .fed-wire:hover .fed-wire-track,
+      .fed-wire:focus .fed-wire-track,
+      .fed-wire:focus-within .fed-wire-track { animation-play-state: paused; }
+
+      .fed-wire-item {
+        display: inline-flex;
+        align-items: center;
+        color: #d6d4cc;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .fed-wire-item::after {
+        content: "◆";
+        margin: 0 13px;
+        color: var(--gold);
+        font-size: 7px;
+      }
+
+      .home-latest-ruling { padding: 14px 11px 11px; }
+
+      .home-section-heading { margin: 0 2px 11px; }
+
+      .home-section-heading h2 { margin: 3px 0 0; font-size: 25px; }
+
+      #homeLatestRuling .history-entry { margin: 0; }
+
+      #homeLatestRuling .history-actions { display: none; }
+
+      #homeLatestRuling .recent-label { display: none; }
+
+      #homeLatestRuling .history-empty { margin: 0; }
+    }
+
+    @keyframes fed-wire-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fed-wire-track {
+        width: auto;
+        animation: none;
+        transform: none;
+      }
+
+      .fed-wire-track .fed-wire-item:nth-child(n + 2) { display: none; }
+    }
+    /* HOME TAB REDESIGN — END */
 
     @media (max-width: 600px) {
       body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
@@ -2199,31 +2425,16 @@
       .container > #historyPanel { display: none !important; }
 
       body:not(:has(#setupPanel:target, #homePanel:target, #gameFormCard:target, #standingsPanel:target, #historyPanel:target)) #homePanel,
-      body:not(:has(#setupPanel:target, #homePanel:target, #gameFormCard:target, #standingsPanel:target, #historyPanel:target)) #standingsPanel,
       body:has(#homePanel:target) #homePanel,
-      body:has(#homePanel:target) #standingsPanel,
       #setupPanel:target,
       #gameFormCard:target,
       #standingsPanel:target,
       #historyPanel:target { display: block !important; }
 
-      body:not(:has(#standingsPanel:target)) #standingsPanel tbody tr:nth-child(n + 4) { display: none; }
-
-      body:not(:has(#standingsPanel:target)) #standingsPanel::after {
-        content: "Top three · Open Standings for the complete record";
-        display: block;
-        margin-top: 11px;
-        color: #a68c4b;
-        font-size: 10px;
-        letter-spacing: .08em;
-        text-align: center;
-        text-transform: uppercase;
-      }
-
-      #homePanel { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+      #homePanel { padding: 0; }
 
       body:not(:has(#setupPanel:target, #gameFormCard:target, #standingsPanel:target, #historyPanel:target)) #homePanel,
-      body:has(#homePanel:target) #homePanel { display: grid !important; }
+      body:has(#homePanel:target) #homePanel { display: block !important; }
 
       .mobile-tabbar {
         position: fixed;
@@ -2399,6 +2610,37 @@
       <span class="snapshot-label">Latest Game</span>
       <strong id="snapshotLatest" class="snapshot-value">None yet</strong>
     </div>
+
+    <!-- HOME TAB REDESIGN — START: read-only presentation of existing league data. -->
+    <div class="home-dashboard">
+      <section class="home-leader-card" aria-labelledby="homeLeaderLabel">
+        <div class="home-leader-kicker" id="homeLeaderLabel">Office of the Acting Chair</div>
+        <button id="homeLeaderButton" class="home-leader-button" type="button">
+          <span class="home-leader-rank" aria-hidden="true">1</span>
+          <span class="home-leader-identity">
+            <strong id="homeLeaderName">Pending appointment</strong>
+            <span id="homeLeaderStats">No sanctioned games yet</span>
+          </span>
+        </button>
+        <div id="homeLeaderBadges" class="home-leader-badges" aria-label="Leader badges"></div>
+      </section>
+
+      <section class="fed-wire" aria-labelledby="fedWireLabel" tabindex="0">
+        <span class="fed-wire-label" id="fedWireLabel">Fed Wire</span>
+        <div class="fed-wire-window">
+          <div id="fedWireTrack" class="fed-wire-track"></div>
+        </div>
+      </section>
+
+      <section class="home-latest-ruling" aria-labelledby="homeLatestHeading">
+        <div class="home-section-heading">
+          <span>Official Dispatch</span>
+          <h2 id="homeLatestHeading">Latest Fed Ruling</h2>
+        </div>
+        <div id="homeLatestRuling"></div>
+      </section>
+    </div>
+    <!-- HOME TAB REDESIGN — END -->
   </section>
 
   <div id="gameFormCard" class="card">
@@ -3491,6 +3733,132 @@
     }
   });
 
+  /* HOME TAB REDESIGN — START
+     Read-only presentation helpers. They do not mutate league state. */
+  function getLongestWinningStreak() {
+    const streaks = new Map(players.map(player => [player.id, {
+      name: player.name,
+      current: 0,
+      longest: 0
+    }]));
+
+    [...games].reverse().forEach(gameRecord => {
+      gameRecord.results.forEach(result => {
+        const streak = streaks.get(result.playerId);
+        if (!streak) return;
+        streak.current = Number(result.place) === 1 ? streak.current + 1 : 0;
+        streak.longest = Math.max(streak.longest, streak.current);
+      });
+    });
+
+    return [...streaks.values()].sort((a, b) =>
+      b.longest - a.longest || a.name.localeCompare(b.name)
+    )[0] || { name: "Pending", longest: 0 };
+  }
+
+  function getNewestBadgeFact() {
+    const latestGame = games[0];
+    if (!latestGame) return "";
+
+    for (const result of latestGame.results) {
+      const player = players.find(candidate => candidate.id === result.playerId);
+      if (!player) continue;
+
+      const previousPlayer = {
+        ...player,
+        points: Math.max(0, player.points - Number(result.points || 0)),
+        wins: Math.max(0, player.wins - (Number(result.place) === 1 ? 1 : 0)),
+        games: Math.max(0, player.games - 1)
+      };
+      const previousNames = new Set(
+        getPlayerBadges(previousPlayer, Number.MAX_SAFE_INTEGER)
+          .filter(badge => !badge.dynamic && !badge.game)
+          .map(badge => badge.name)
+      );
+      const newBadge = getPlayerBadges(player, Number.MAX_SAFE_INTEGER)
+        .find(badge => !badge.dynamic && !badge.game && !previousNames.has(badge.name));
+
+      if (newBadge) return "New badge: " + player.name + " — " + newBadge.name;
+    }
+
+    return "";
+  }
+
+  function renderHomePresentation(sortedPlayers) {
+    const leader = games.length ? sortedPlayers[0] : null;
+    const leaderName = document.getElementById("homeLeaderName");
+    const leaderStats = document.getElementById("homeLeaderStats");
+    const leaderButton = document.getElementById("homeLeaderButton");
+    const leaderBadges = document.getElementById("homeLeaderBadges");
+
+    leaderName.textContent = leader ? leader.name : "Pending appointment";
+    leaderStats.textContent = leader
+      ? leader.points + " points · " + leader.wins + " win" + (leader.wins === 1 ? "" : "s") +
+        " · " + leader.games + " game" + (leader.games === 1 ? "" : "s")
+      : "No sanctioned games yet";
+    leaderButton.disabled = !leader;
+    leaderButton.onclick = leader ? () => openPlayerModal(leader.id) : null;
+    leaderBadges.innerHTML = "";
+
+    if (leader) {
+      getPlayerBadges(leader, 1).forEach(badge => {
+        const item = document.createElement("span");
+        item.className = "home-leader-badge";
+        item.textContent = badge.icon + " " + badge.name;
+        item.title = badge.description;
+        leaderBadges.appendChild(item);
+      });
+    }
+
+    if (!leaderBadges.children.length) {
+      const pending = document.createElement("span");
+      pending.className = "home-leader-badge";
+      pending.textContent = "Commendations pending";
+      leaderBadges.appendChild(pending);
+    }
+
+    const longestStreak = getLongestWinningStreak();
+    const latestGame = games[0];
+    const badgeCount = players.reduce((total, player, index) =>
+      total + getPlayerBadges(player, sortedPlayers.indexOf(player) + 1).length, 0
+    );
+    const wireFacts = [
+      leader ? "Acting Chair: " + leader.name + " with " + leader.points + " points" : "The chair remains officially vacant",
+      longestStreak.longest
+        ? "Longest winning streak: " + longestStreak.name + " at " + longestStreak.longest
+        : "Winning streak audit pending",
+      games.length + " sanctioned game" + (games.length === 1 ? "" : "s") + " on file",
+      latestGame ? "Latest filing: " + latestGame.game : "No game filings received",
+      getNewestBadgeFact() || badgeCount + " badge" + (badgeCount === 1 ? "" : "s") + " currently on the commendation ledger"
+    ];
+    const wireTrack = document.getElementById("fedWireTrack");
+    wireTrack.innerHTML = "";
+
+    [...wireFacts, ...wireFacts].forEach(fact => {
+      const item = document.createElement("span");
+      item.className = "fed-wire-item";
+      item.textContent = fact;
+      wireTrack.appendChild(item);
+    });
+
+    const latestRuling = document.getElementById("homeLatestRuling");
+    latestRuling.innerHTML = "";
+    const newestHistoryEntry = document.querySelector("#rulings .history-entry:not(.legacy-entry)");
+
+    if (newestHistoryEntry) {
+      const homeEntry = newestHistoryEntry.cloneNode(true);
+      homeEntry.open = true;
+      homeEntry.querySelector(".history-actions")?.remove();
+      latestRuling.appendChild(homeEntry);
+    } else {
+      const empty = document.createElement("p");
+      empty.className = "history-empty";
+      empty.textContent = "The Commission is awaiting its first case.";
+      latestRuling.appendChild(empty);
+    }
+  }
+  /* HOME TAB REDESIGN — END */
+
   function render() {
 
     const activePlayers = players.filter(player => !player.archived);
@@ -3927,6 +4295,8 @@
       });
 
     }
+
+    renderHomePresentation(sortedPlayers);
   }
 
   // Persist only the validated, normalized state. Legacy keys remain untouched
