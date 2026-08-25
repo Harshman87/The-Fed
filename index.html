@@ -2413,6 +2413,226 @@
 
       .fed-wire-track .fed-wire-item:nth-child(n + 2) { display: none; }
     }
+
+    /* HOME SPORTS FRONT PAGE — START: reversible visual refinement. */
+    .league-crest { display: none; }
+
+    @media (max-width: 600px) {
+      :root {
+        --home-navy: #071525;
+        --home-navy-raised: #0b1d31;
+        --home-navy-soft: #102740;
+        --home-gold: #d8ad45;
+        --home-gold-light: #f1d47e;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 78% -5%, rgba(43, 76, 112, .34), transparent 29%),
+          linear-gradient(180deg, #050d17, #071321 44%, #040a11);
+      }
+
+      header {
+        min-height: 150px;
+        padding: calc(22px + env(safe-area-inset-top)) 18px 19px;
+        background:
+          linear-gradient(115deg, rgba(8, 24, 41, .98), rgba(4, 12, 21, .98));
+        text-align: left;
+      }
+
+      header::after { content: none; display: none; }
+
+      header::before {
+        right: 18px;
+        bottom: 7px;
+        left: 18px;
+        width: auto;
+        transform: none;
+        background: linear-gradient(90deg, var(--home-gold) 0 18%, transparent 18% 21%, rgba(216, 173, 69, .38) 21% 100%);
+      }
+
+      header .eyebrow {
+        position: relative;
+        z-index: 2;
+        color: #b8c2cc;
+        font-size: 9px;
+      }
+
+      header h1 {
+        position: relative;
+        z-index: 2;
+        margin: 8px 0 5px;
+        color: var(--home-gold-light);
+        font-size: clamp(48px, 15vw, 64px);
+        letter-spacing: .045em;
+        text-shadow: 0 8px 28px rgba(0, 0, 0, .46);
+      }
+
+      #headerLeague {
+        position: relative;
+        z-index: 2;
+        max-width: 70%;
+        color: #f2f5f6;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .035em;
+      }
+
+      #manageLeagueButton { display: none !important; }
+
+      .league-crest {
+        position: absolute;
+        top: calc(15px + env(safe-area-inset-top));
+        right: 14px;
+        z-index: 1;
+        display: block;
+        width: 100px;
+        height: 118px;
+        opacity: .48;
+        background:
+          radial-gradient(ellipse, transparent 0 54%, rgba(216, 173, 69, .16) 55% 57%, transparent 58% 66%, rgba(216, 173, 69, .48) 67% 69%, transparent 70%),
+          repeating-conic-gradient(from 0deg, rgba(216, 173, 69, .14) 0 2deg, transparent 2deg 24deg),
+          #081a2c;
+        border: 1px solid rgba(216, 173, 69, .7);
+        border-radius: 48% 48% 46% 46% / 42% 42% 54% 54%;
+        box-shadow: inset 0 0 0 4px #081523, inset 0 0 0 5px rgba(216, 173, 69, .3);
+        transform: rotate(5deg);
+      }
+
+      .league-crest::before,
+      .league-crest::after {
+        position: absolute;
+        right: 0;
+        left: 0;
+        color: var(--home-gold-light);
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 800;
+        letter-spacing: .12em;
+        text-align: center;
+      }
+
+      .league-crest::before { content: "THE FED"; top: 9px; font-size: 8px; }
+      .league-crest::after { content: "BOARD GAME LEAGUE"; bottom: 9px; font-size: 5px; }
+
+      .crest-card {
+        position: absolute;
+        top: 40px;
+        left: 20px;
+        width: 27px;
+        height: 37px;
+        background: #0d2945;
+        border: 2px solid var(--home-gold);
+        border-radius: 4px;
+        transform: rotate(-15deg);
+      }
+
+      .crest-card::after {
+        content: "F";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: var(--home-gold-light);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 15px;
+      }
+
+      .crest-die {
+        position: absolute;
+        top: 43px;
+        right: 18px;
+        width: 27px;
+        height: 27px;
+        background:
+          radial-gradient(circle at 28% 28%, #071525 0 2px, transparent 2.5px),
+          radial-gradient(circle at 72% 28%, #071525 0 2px, transparent 2.5px),
+          radial-gradient(circle at 50% 50%, #071525 0 2px, transparent 2.5px),
+          radial-gradient(circle at 28% 72%, #071525 0 2px, transparent 2.5px),
+          radial-gradient(circle at 72% 72%, #071525 0 2px, transparent 2.5px),
+          var(--home-gold-light);
+        border: 1px solid var(--home-gold);
+        border-radius: 5px;
+        transform: rotate(12deg);
+      }
+
+      .crest-meeple {
+        position: absolute;
+        top: 46px;
+        left: 42px;
+        z-index: 2;
+        width: 18px;
+        height: 28px;
+        background: var(--home-gold);
+        border-radius: 8px 8px 4px 4px;
+        clip-path: polygon(27% 0, 73% 0, 78% 22%, 100% 45%, 78% 58%, 86% 100%, 55% 100%, 50% 72%, 45% 100%, 14% 100%, 22% 58%, 0 45%, 22% 22%);
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5));
+      }
+
+      .home-dashboard { gap: 8px; }
+
+      .home-leader-card,
+      .fed-wire,
+      .home-latest-ruling {
+        background: linear-gradient(145deg, var(--home-navy-raised), #07121f);
+        border-color: #29415a;
+      }
+
+      .home-leader-card { padding: 13px 14px; border-color: rgba(216, 173, 69, .52); }
+
+      .home-leader-card::after { content: none; }
+
+      .home-leader-kicker { margin-bottom: 1px; color: #c6a85c; }
+
+      .home-leader-button {
+        min-height: 48px;
+        margin: 2px 0 6px;
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .home-leader-identity strong { font-size: 25px; }
+
+      .home-leader-identity span { color: #b4bec7; font-size: 12px; }
+
+      .home-leader-badge {
+        min-height: 25px;
+        padding: 4px 7px;
+        color: var(--home-gold-light);
+        background: rgba(216, 173, 69, .08);
+        border-color: rgba(216, 173, 69, .28);
+      }
+
+      .fed-wire { min-height: 39px; border-color: #29415a; }
+
+      .fed-wire-label {
+        color: #06111d;
+        background: var(--home-gold);
+      }
+
+      .fed-wire-track { animation-duration: 58s; }
+
+      .fed-wire-item { color: #c7d0d7; }
+
+      .home-latest-ruling { padding: 13px 10px 10px; }
+
+      .home-section-heading { margin-bottom: 8px; }
+
+      .home-section-heading > span { color: var(--home-gold); }
+
+      #homeLatestRuling .history-order { display: none; }
+
+      #homeLatestRuling .ruling {
+        background: linear-gradient(145deg, #0b1b2d, #07121e);
+        border-color: rgba(216, 173, 69, .55);
+      }
+
+      #homeLatestRuling .fed-review {
+        margin-top: 0;
+        border-top-color: #2b4054;
+      }
+
+      #homeLatestRuling .ruling-report { color: #e1e4e5; line-height: 1.5; }
+    }
+    /* HOME SPORTS FRONT PAGE — END */
     /* HOME TAB REDESIGN — END */
 
     @media (max-width: 600px) {
@@ -2552,6 +2772,13 @@
 <body>
 
 <header>
+  <!-- HOME SPORTS FRONT PAGE — START: CSS-only board-game league crest. -->
+  <span class="league-crest" aria-hidden="true">
+    <span class="crest-card"></span>
+    <span class="crest-meeple"></span>
+    <span class="crest-die"></span>
+  </span>
+  <!-- HOME SPORTS FRONT PAGE — END -->
   <span class="eyebrow">Federal Board Game Commission</span>
   <h1>THE FED</h1>
   <p id="headerLeague">Board Game League</p>
@@ -2614,9 +2841,8 @@
     <!-- HOME TAB REDESIGN — START: read-only presentation of existing league data. -->
     <div class="home-dashboard">
       <section class="home-leader-card" aria-labelledby="homeLeaderLabel">
-        <div class="home-leader-kicker" id="homeLeaderLabel">Office of the Acting Chair</div>
+        <div class="home-leader-kicker" id="homeLeaderLabel">League Leader</div>
         <button id="homeLeaderButton" class="home-leader-button" type="button">
-          <span class="home-leader-rank" aria-hidden="true">1</span>
           <span class="home-leader-identity">
             <strong id="homeLeaderName">Pending appointment</strong>
             <span id="homeLeaderStats">No sanctioned games yet</span>
@@ -3784,6 +4010,45 @@
     return "";
   }
 
+  function buildHomeFedReview(gameRecord) {
+    const gameTitle = gameRecord.game || "the latest filing";
+    const winners = gameRecord.results
+      .filter(result => Number(result.place) === 1)
+      .map(result => result.name);
+    const winnerText = winners.length > 1
+      ? winners.slice(0, -1).join(", ") + " and " + winners[winners.length - 1]
+      : winners[0] || "the prevailing party";
+    let seed = 0;
+    for (const character of gameTitle) {
+      seed = ((seed << 5) - seed + character.charCodeAt(0)) | 0;
+    }
+    const openings = [
+      gameTitle + " arrived on the Commission docket with the confidence of a prime-time matchup.",
+      "The commissioners opened the " + gameTitle + " file and immediately requested stronger coffee.",
+      "Under the bright lights of game night, " + gameTitle + " produced a record too lively to ignore.",
+      "No sooner had " + gameTitle + " concluded than the Fed's review desk began issuing opinions.",
+      "The Fed review chamber took up " + gameTitle + " with all the seriousness the cardboard evidence deserved."
+    ];
+    const storedSentences = String(gameRecord.report || "")
+      .match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+    const officialFinding = storedSentences
+      .map(sentence => sentence.trim())
+      .filter(Boolean)
+      .slice(0, 2);
+    if (!officialFinding.length) {
+      officialFinding.push("The submitted record was reviewed, stamped, and returned without a request for a rematch.");
+    }
+    const closing = winnerText + " leaves the table as the recognized winner over " +
+      gameRecord.results.length + " player" + (gameRecord.results.length === 1 ? "" : "s") +
+      ", pending the usual appeals, protests, and snack-based objections.";
+
+    return [
+      openings[Math.abs(seed) % openings.length],
+      ...officialFinding,
+      closing
+    ].join(" ");
+  }
+
   function renderHomePresentation(sortedPlayers) {
     const leader = games.length ? sortedPlayers[0] : null;
     const leaderName = document.getElementById("homeLeaderName");
@@ -3849,6 +4114,11 @@
       const homeEntry = newestHistoryEntry.cloneNode(true);
       homeEntry.open = true;
       homeEntry.querySelector(".history-actions")?.remove();
+      homeEntry.querySelector(".history-order")?.remove();
+      const homeReport = homeEntry.querySelector(".ruling-report");
+      if (homeReport && latestGame) homeReport.textContent = buildHomeFedReview(latestGame);
+      const homeReviewLabel = homeEntry.querySelector(".fed-review-label");
+      if (homeReviewLabel) homeReviewLabel.textContent = "Fed Review · Home Desk";
       latestRuling.appendChild(homeEntry);
     } else {
       const empty = document.createElement("p");
