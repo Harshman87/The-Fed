@@ -3667,56 +3667,104 @@
     const sharedWin = winners.length > 1;
     const gameLabel = "“" + game + "”";
 
-    const findings = sharedWin ? [
-      "Proceedings for " + gameLabel + " ended in a shared victory for " + winner + "; the Fed has reluctantly approved the joint paperwork.",
-      "In the matter of " + gameLabel + ", " + winner + " tied for control and forced the Commission to recognize teamwork in public.",
-      "Jurisdiction over " + gameLabel + " is now shared by " + winner + ", pending procurement of additional tiny crowns.",
-      "The final order for " + gameLabel + " names " + winner + " as joint winners, an outcome accepted under administrative protest.",
-      gameLabel + " produced multiple first-place claimants: " + winner + ". The paperwork has been duplicated accordingly."
+    const openings = sharedWin ? [
+      gameLabel + " reached the Commission with multiple claimants and insufficient desk space for all the crowns.",
+      "The Fed opened the " + gameLabel + " file and discovered that first place had been jointly occupied.",
+      "Under the bright lights of game night, " + gameLabel + " produced a result requiring duplicate victory forms.",
+      "The final turn of " + gameLabel + " left the Commission facing the rare administrative burden of shared success.",
+      "Review of " + gameLabel + " began with a tie and proceeded under controlled bureaucratic alarm."
     ] : [
-      winner + " prevailed in " + gameLabel + " over a field of " + results.length + ", and the Fed found no affordable basis for an appeal.",
-      "The file for " + gameLabel + " belongs to " + winner + ", whose win survived a brief audit and several longer sighs.",
-      winner + " leaves the " + gameLabel + " proceeding in first place; the Commission has certified the result with visible reluctance.",
-      "In the matter of " + gameLabel + ", " + winner + " converted competence into a permanent public record.",
-      "Following review of " + gameLabel + ", the Commission recognizes " + winner + " as the lawful holder of first place.",
-      "The official disposition of " + gameLabel + " places " + winner + " on top and all objections in a slow-moving queue."
+      gameLabel + " arrived on the Commission docket with " + winner + " already occupying the top line.",
+      "The Fed opened the " + gameLabel + " file and found " + winner + " waiting in first place.",
+      "Under the bright lights of game night, " + gameLabel + " gave " + winner + " the decisive headline.",
+      "The final turn of " + gameLabel + " sent " + winner + " directly to the winner's desk.",
+      "Review of " + gameLabel + " began with the usual paperwork and ended with " + winner + " on top.",
+      "By the time the " + gameLabel + " evidence reached headquarters, " + winner + " had already secured the favorable footnote."
     ];
 
-    let context;
-    if (cleanNote) {
-      const briefContext = [
-        "A sealed field report suggested unusual circumstances, but none sufficient to disturb the result.",
-        "Additional context was reviewed in chambers and classified as competitively inconvenient.",
-        "The Commission considered the night's supporting record and declined to reopen the table.",
-        "A supplementary filing affected the tone of this ruling, not its outcome.",
-        "Off-record developments were noted, stamped, and placed beyond the reach of appeals.",
-        "The surrounding circumstances have been acknowledged without being dignified in the official record."
-      ];
-      const detailedContext = [
-        "The unusually extensive field report was reviewed in full; its contents changed the mood, but not the result.",
-        "Investigators received substantial background material and have wisely reduced it to one finding: the standings remain final.",
-        "A detailed supplemental record raised several questions and answered none relevant to the final placement.",
-        "The Commission reviewed the full account, requested no reenactment, and certified the outcome as filed.",
-        "Supporting testimony was abundant. Administrative patience was not. The result stands.",
-        "The broader record has been sealed for the protection of future game nights."
-      ];
-      context = choose(cleanNote.length > 120 ? detailedContext : briefContext, 1);
-    } else if (groups.length === 1) {
-      context = "Everyone else also finished first, a statistical event the Commission will not be explaining.";
-    } else if (runnersUp.length > 1) {
-      context = runnerUp + " shared second while " + lastPlace + " received the ceremonial duty of turning off the lights.";
+    let resultFinding;
+    if (groups.length === 1) {
+      resultFinding = winner + " all finished first, a perfectly valid result that has nevertheless upset the filing system.";
+    } else if (sharedWin) {
+      resultFinding = winner + " share the official victory, while " + lastPlace +
+        (last.length === 1 ? " retains" : " retain") + " equal access to the appeals queue.";
     } else if (results.length === 2) {
-      context = runnerUp + " finished second in the two-player inquiry and has requested a less accurate record.";
+      resultFinding = winner + " prevailed over " + runnerUp + " in a two-player inquiry with nowhere for the evidence to hide.";
+    } else if (runnersUp.length > 1) {
+      resultFinding = winner + " took first, " + runnerUp + " shared second, and " + lastPlace + " inherited the closing paperwork.";
     } else {
-      context = choose([
-        runnerUp + " secured second; " + lastPlace + " secured a valuable learning opportunity.",
-        runnerUp + " led the unsuccessful opposition, while " + lastPlace + " now controls the appeals desk.",
-        "Second place went to " + runnerUp + "; " + lastPlace + " was last seen drafting a strongly worded rematch.",
-        runnerUp + " came closest to interference. " + lastPlace + " came closest to the snack table."
+      resultFinding = winner + " took first ahead of " + runnerUp + ", while " + lastPlace + " received a valuable but nontransferable learning opportunity.";
+    }
+
+    let noteFinding;
+    if (!cleanNote) {
+      noteFinding = choose([
+        "No supplemental testimony was filed, so the board, pieces, and final positions were permitted to speak for themselves.",
+        "The record contains no additional statement from the table, an omission the Commission has chosen to interpret as confidence.",
+        "With no field note attached, investigators relied on the result and a professionally raised eyebrow."
+      ], 1);
+    } else if (cleanNote.length > 120) {
+      noteFinding = choose([
+        "A substantial field report shaped the Commission's reading of the evening, though its particulars remain sealed from public recital.",
+        "Investigators reviewed an unusually detailed supplemental filing and incorporated its general character without reproducing the testimony.",
+        "The lengthy account from the table influenced the tone of this finding, but not the certified order of finish."
+      ], 1);
+    } else if (/[!?]/.test(cleanNote)) {
+      noteFinding = choose([
+        "The accompanying field note conveyed unusual energy, which the Commission has translated into calmer administrative language.",
+        "Supplemental testimony arrived with emphasis; the official record acknowledges the mood without repeating the allegation.",
+        "A spirited note from the table informed this review and was then placed at a safe distance from the minutes."
+      ], 1);
+    } else {
+      noteFinding = choose([
+        "A brief field note influenced the character of this review without being quoted or entered as a separate finding.",
+        "The Commission considered the submitted context, preserved its spirit, and declined to repeat the particulars.",
+        "Supplemental context was reviewed in chambers and used only to season the ruling, not rewrite the result."
+      ], 1);
+    }
+
+    const lowerGame = game.toLocaleLowerCase();
+    let gameFlavor;
+    if (/terraform|mars/.test(lowerGame)) {
+      gameFlavor = "The planetary paperwork, oxygen projections, and suspiciously ambitious infrastructure have now been returned to Mars control.";
+    } else if (/wingspan/.test(lowerGame)) {
+      gameFlavor = "The final habitat audit found the birds orderly, the eggs accounted for, and the competitive plumage entirely unnecessary.";
+    } else if (/unmatched/.test(lowerGame)) {
+      gameFlavor = "The arena has been cleared, the miniatures returned to custody, and all heroic claims reduced to their printed values.";
+    } else if (/catan/.test(lowerGame)) {
+      gameFlavor = "Road permits, settlement claims, and the regional sheep supply were examined before the island was released from supervision.";
+    } else if (/ticket.*ride|ride.*ticket/.test(lowerGame)) {
+      gameFlavor = "The route map survived inspection, although several scheduling decisions remain under quiet review by the rail authority.";
+    } else if (/pandemic/.test(lowerGame)) {
+      gameFlavor = "Outbreak records and research stations were reconciled, and the cubes have been advised not to travel pending further notice.";
+    } else if (/azul/.test(lowerGame)) {
+      gameFlavor = "The tile ledger confirms that aesthetic judgment and competitive restraint did not always occupy the same wall.";
+    } else if (/splendor/.test(lowerGame)) {
+      gameFlavor = "The gem reserve has been counted twice, while the nobles continue to deny influencing the proceeding.";
+    } else if (/carcassonne/.test(lowerGame)) {
+      gameFlavor = "The tile map was certified despite several meeples maintaining overlapping theories of land use.";
+    } else if (/root/.test(lowerGame)) {
+      gameFlavor = "The woodland factions have been returned to their clearings with instructions to file future revolts in triplicate.";
+    } else if (/dune/.test(lowerGame)) {
+      gameFlavor = "The spice accounts remain volatile, the desert remains inhospitable, and the Commission remains confidently off-world.";
+    } else {
+      gameFlavor = choose([
+        "The cards, tokens, and disputed table space of " + gameLabel + " have been inventoried and released back into circulation.",
+        "The particular machinery of " + gameLabel + " performed as designed, even where the players plainly did not.",
+        "The board-state evidence from " + gameLabel + " has been boxed, labeled, and declared someone else's setup problem.",
+        "Every relevant component of " + gameLabel + " has been counted, except the excuses, which exceeded storage capacity."
       ], 2);
     }
 
-    return choose(findings) + " " + context;
+    const closings = [
+      "The result is final until the next game night produces a louder argument.",
+      "The standings may now proceed, subject only to snacks and future regulatory interference.",
+      "This closes the file, opens the rematch window, and settles absolutely nothing socially.",
+      "The Commission certifies the outcome and recommends that all parties shuffle more carefully next time.",
+      "All appeals must be submitted before someone starts setting up another game."
+    ];
+
+    return [choose(openings), resultFinding, noteFinding, gameFlavor, choose(closings, 3)].join(" ");
   }
 
   function formatGameDate(recordedAt) {
@@ -4010,45 +4058,6 @@
     return "";
   }
 
-  function buildHomeFedReview(gameRecord) {
-    const gameTitle = gameRecord.game || "the latest filing";
-    const winners = gameRecord.results
-      .filter(result => Number(result.place) === 1)
-      .map(result => result.name);
-    const winnerText = winners.length > 1
-      ? winners.slice(0, -1).join(", ") + " and " + winners[winners.length - 1]
-      : winners[0] || "the prevailing party";
-    let seed = 0;
-    for (const character of gameTitle) {
-      seed = ((seed << 5) - seed + character.charCodeAt(0)) | 0;
-    }
-    const openings = [
-      gameTitle + " arrived on the Commission docket with the confidence of a prime-time matchup.",
-      "The commissioners opened the " + gameTitle + " file and immediately requested stronger coffee.",
-      "Under the bright lights of game night, " + gameTitle + " produced a record too lively to ignore.",
-      "No sooner had " + gameTitle + " concluded than the Fed's review desk began issuing opinions.",
-      "The Fed review chamber took up " + gameTitle + " with all the seriousness the cardboard evidence deserved."
-    ];
-    const storedSentences = String(gameRecord.report || "")
-      .match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
-    const officialFinding = storedSentences
-      .map(sentence => sentence.trim())
-      .filter(Boolean)
-      .slice(0, 2);
-    if (!officialFinding.length) {
-      officialFinding.push("The submitted record was reviewed, stamped, and returned without a request for a rematch.");
-    }
-    const closing = winnerText + " leaves the table as the recognized winner over " +
-      gameRecord.results.length + " player" + (gameRecord.results.length === 1 ? "" : "s") +
-      ", pending the usual appeals, protests, and snack-based objections.";
-
-    return [
-      openings[Math.abs(seed) % openings.length],
-      ...officialFinding,
-      closing
-    ].join(" ");
-  }
-
   function renderHomePresentation(sortedPlayers) {
     const leader = games.length ? sortedPlayers[0] : null;
     const leaderName = document.getElementById("homeLeaderName");
@@ -4115,10 +4124,8 @@
       homeEntry.open = true;
       homeEntry.querySelector(".history-actions")?.remove();
       homeEntry.querySelector(".history-order")?.remove();
-      const homeReport = homeEntry.querySelector(".ruling-report");
-      if (homeReport && latestGame) homeReport.textContent = buildHomeFedReview(latestGame);
       const homeReviewLabel = homeEntry.querySelector(".fed-review-label");
-      if (homeReviewLabel) homeReviewLabel.textContent = "Fed Review · Home Desk";
+      if (homeReviewLabel) homeReviewLabel.textContent = "Fed Review · Commission Finding";
       latestRuling.appendChild(homeEntry);
     } else {
       const empty = document.createElement("p");
