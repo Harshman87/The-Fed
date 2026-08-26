@@ -578,30 +578,6 @@
       min-width: 180px;
     }
 
-    .standings-badges {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    .standings-game-badge {
-      display: inline-grid;
-      place-items: center;
-      min-width: 27px;
-      height: 20px;
-      padding: 0 6px;
-      color: hsl(var(--game-hue) 55% 84%);
-      background: hsl(var(--game-hue) 30% 22% / .72);
-      border: 1px solid hsl(var(--game-hue) 38% 52% / .58);
-      border-radius: 5px;
-      font-size: 8px;
-      font-weight: 900;
-      letter-spacing: .08em;
-      line-height: 1;
-      text-transform: uppercase;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
-    }
-
     .ruling {
       overflow: hidden;
       background: var(--surface-inset);
@@ -628,27 +604,6 @@
     .ruling summary:focus-visible {
       outline: 2px solid var(--gold);
       outline-offset: -3px;
-    }
-
-    .history-game-mark {
-      display: inline-grid;
-      flex: 0 0 auto;
-      place-items: center;
-      width: 36px;
-      height: 36px;
-      color: hsl(var(--game-hue) 55% 84%);
-      background: hsl(var(--game-hue) 30% 22% / .72);
-      border: 1px solid hsl(var(--game-hue) 38% 52% / .58);
-      border-radius: 9px;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: .06em;
-    }
-
-    .legacy-mark {
-      color: var(--muted);
-      background: #171c19;
-      border-color: #3a443f;
     }
 
     .history-chevron {
@@ -1022,8 +977,6 @@
       font-weight: 900;
     }
 
-    .badge-icon.game-mark { font-size: 10px; letter-spacing: .06em; }
-
     .badge-card strong {
       display: block;
       color: var(--gold-soft);
@@ -1045,19 +998,19 @@
     .badge-card.dynamic-title strong { color: #9bd3ba; }
 
     .badge-card.game-title {
+      grid-template-columns: minmax(0, 1fr);
       background: hsl(var(--game-hue) 28% 18% / .72);
       border-color: hsl(var(--game-hue) 38% 50% / .48);
     }
 
     .badge-card.game-title strong,
+    .badge-card.game-title p,
+    .badge-card.game-title .badge-type,
+    .badge-card.game-title .achievement-hint { grid-column: 1; }
+
+    .badge-card.game-title strong,
     .badge-card.game-title .badge-type {
       color: hsl(var(--game-hue) 52% 76%);
-    }
-
-    .badge-card.game-title .badge-icon {
-      color: hsl(var(--game-hue) 55% 82%);
-      background: hsl(var(--game-hue) 30% 24% / .72);
-      border-color: hsl(var(--game-hue) 38% 52% / .5);
     }
 
     .badge-type {
@@ -1205,8 +1158,6 @@
       }
 
       .ruling summary { align-items: flex-start; padding: 14px; }
-
-      .history-game-mark { width: 34px; height: 34px; }
 
       .history-date {
         display: block;
@@ -1860,12 +1811,6 @@
       border-bottom: 1px solid rgba(215, 170, 62, .42);
     }
 
-    .history-game-mark {
-      color: #17140c;
-      background: var(--gold);
-      border-color: var(--gold-soft);
-    }
-
     .history-date,
     .history-meta { color: #aaa9a3; }
 
@@ -2110,12 +2055,6 @@
       .ruling summary {
         min-height: 66px;
         padding: 12px 13px;
-      }
-
-      .history-game-mark {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
       }
 
       .ruling summary strong,
@@ -3049,16 +2988,6 @@
 
     .memory-cover img { width: 100%; height: 100%; object-fit: cover; }
 
-    .memory-cover-placeholder {
-      display: grid;
-      height: 100%;
-      place-items: center;
-      color: var(--gold);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 18px;
-      letter-spacing: .08em;
-    }
-
     @media (max-width: 600px) {
       .form-title-line { margin-bottom: 12px; }
 
@@ -3078,9 +3007,9 @@
 
       .memory-photo-prompt button { width: 100%; }
 
-      #historyPanel .ruling summary { grid-template-columns: 82px minmax(0, 1fr) auto; }
+      #historyPanel .ruling summary { grid-template-columns: minmax(0, 1fr) auto; }
 
-      #historyPanel .history-game-mark { display: none; }
+      #historyPanel .ruling summary.has-memory-cover { grid-template-columns: 82px minmax(0, 1fr) auto; }
 
       .memory-cover { width: 82px; min-width: 82px; }
 
@@ -3223,61 +3152,6 @@
       text-transform: uppercase;
     }
 
-    .game-art {
-      display: grid;
-      width: 100%;
-      height: 100%;
-      place-items: center;
-      overflow: hidden;
-      color: var(--gold-soft);
-      background:
-        radial-gradient(circle at 32% 24%, hsl(var(--game-hue) 52% 42% / .48), transparent 28%),
-        linear-gradient(145deg, hsl(var(--game-hue) 34% 23%), #07111a);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    .game-art img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .standings-game-badge.has-game-art {
-      width: 30px;
-      height: 24px;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .home-leader-game-art { width: 23px; height: 20px; overflow: hidden; border-radius: 4px; }
-
-    .history-game-mark.has-game-art,
-    .badge-icon.game-mark.has-game-art { padding: 0; overflow: hidden; }
-
-    .memory-cover-placeholder:has(.game-art) { width: 100%; padding: 0; }
-
-    .artwork-credits {
-      display: grid;
-      gap: 5px;
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.4;
-    }
-
-    .artwork-credits:empty { display: none; }
-
-    .artwork-credits strong {
-      color: #c9b36f;
-      font-size: 9px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-
-    .artwork-credits a { color: #bfc8c3; text-underline-offset: 2px; }
 
     @media (max-width: 600px) {
       .form-step + .form-step { border-top-color: transparent; }
@@ -3358,7 +3232,6 @@
       <div id="achievementsGallery" class="achievements-groups"></div>
     </div>
 
-    <div id="gameArtworkCredits" class="artwork-credits" aria-label="Game artwork credits"></div>
   </div>
 
   <section id="homePanel" class="dashboard-snapshot" aria-label="League snapshot">
@@ -3722,14 +3595,6 @@
               name: typeof knowledge.source.name === "string" ? knowledge.source.name.slice(0, 80) : "",
               url: typeof knowledge.source.url === "string" ? knowledge.source.url.slice(0, 500) : ""
             } : { name: "", url: "" },
-            artwork: knowledge.artwork && typeof knowledge.artwork === "object" &&
-              /^https:\/\//.test(knowledge.artwork.url || "") ? {
-                url: knowledge.artwork.url.slice(0, 1000),
-                sourceUrl: typeof knowledge.artwork.sourceUrl === "string" ? knowledge.artwork.sourceUrl.slice(0, 1000) : "",
-                creator: typeof knowledge.artwork.creator === "string" ? knowledge.artwork.creator.slice(0, 200) : "",
-                license: typeof knowledge.artwork.license === "string" ? knowledge.artwork.license.slice(0, 100) : "",
-                alt: typeof knowledge.artwork.alt === "string" ? knowledge.artwork.alt.slice(0, 200) : "Game artwork"
-              } : null,
             fetchedAt: typeof knowledge.fetchedAt === "string" ? knowledge.fetchedAt : ""
           }
         };
@@ -3805,7 +3670,6 @@
   let memoryDialogReturnFocus = null;
   let achievementCatalog = [];
   let achievementDialogReturnFocus = null;
-  let existingKnowledgeEnrichmentStarted = false;
 
   function saveData() {
     recalculateStandings(state);
@@ -4460,37 +4324,6 @@
     return sentences.map(sentence => sentence.trim()).filter(Boolean).slice(0, count).join(" ").slice(0, 700);
   }
 
-  function stripKnowledgeMarkup(value) {
-    const container = document.createElement("div");
-    container.innerHTML = String(value || "");
-    return (container.textContent || "").replace(/\s+/g, " ").trim();
-  }
-
-  async function getReusableWikipediaArtwork(page, signal, gameTitle) {
-    if (!page.pageimage) return null;
-    const endpoint = new URL("https://en.wikipedia.org/w/api.php");
-    endpoint.search = new URLSearchParams({
-      action: "query", titles: "File:" + page.pageimage, prop: "imageinfo",
-      iiprop: "url|extmetadata", iiurlwidth: "640", format: "json", formatversion: "2", origin: "*"
-    });
-    const response = await fetch(endpoint, { signal });
-    if (!response.ok) return null;
-    const payload = await response.json();
-    const image = payload?.query?.pages?.[0]?.imageinfo?.[0];
-    const metadata = image?.extmetadata || {};
-    const license = stripKnowledgeMarkup(metadata.LicenseShortName?.value || metadata.UsageTerms?.value || "");
-    if (!/creative commons|cc by|cc0|public domain|gnu/i.test(license)) return null;
-    const url = image.thumburl || image.url;
-    if (!/^https:\/\//.test(url || "")) return null;
-    return {
-      url,
-      sourceUrl: image.descriptionurl || page.fullurl || "",
-      creator: stripKnowledgeMarkup(metadata.Artist?.value || metadata.Credit?.value || "Contributor"),
-      license,
-      alt: "Artwork associated with " + gameTitle
-    };
-  }
-
   async function wikipediaClientKnowledgeSource(gameTitle) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 6500);
@@ -4498,7 +4331,7 @@
       const endpoint = new URL("https://en.wikipedia.org/w/api.php");
       endpoint.search = new URLSearchParams({
         action: "query", generator: "search", gsrsearch: 'intitle:"' + gameTitle + '" board game',
-        gsrlimit: "6", prop: "extracts|info|pageimages", exintro: "1", explaintext: "1", piprop: "name",
+        gsrlimit: "6", prop: "extracts|info", exintro: "1", explaintext: "1",
         inprop: "url", format: "json", formatversion: "2", origin: "*"
       });
       const response = await fetch(endpoint, { signal: controller.signal });
@@ -4513,7 +4346,6 @@
       const page = exact[0];
       const extract = String(page.extract || "");
       if (!/\b(board game|card game|tabletop game|strategy game|party game|cooperative game)\b/i.test(extract)) return null;
-      const artwork = await getReusableWikipediaArtwork(page, controller.signal, gameTitle);
       const conceptPatterns = [
         ["deck building", /deck[- ]build|build(?:ing)? (?:a )?deck/i], ["card drafting", /card draft|drafting cards/i],
         ["worker placement", /worker placement|place workers/i], ["tile placement", /tile placement|place tiles/i],
@@ -4535,7 +4367,6 @@
         concepts: conceptPatterns.filter(([, pattern]) => pattern.test(extract)).map(([label]) => label).slice(0, 6),
         summary: conciseKnowledgeSentences(extract, 2),
         source: { name: "Wikipedia", url: page.fullurl || "https://en.wikipedia.org/" },
-        artwork,
         fetchedAt: new Date().toISOString()
       };
     } catch (error) {
@@ -4554,8 +4385,7 @@
     if (!key) return null;
     const cached = gameKnowledgeCache[key];
     const cachedAt = Date.parse(cached && cached.fetchedAt || "");
-    const cacheSupportsArtwork = cached?.knowledge === null || Number(cached?.knowledge?.version) >= 2;
-    if (cached && cacheSupportsArtwork && Number.isFinite(cachedAt) && Date.now() - cachedAt < 30 * 24 * 60 * 60 * 1000) {
+    if (cached && Number.isFinite(cachedAt) && Date.now() - cachedAt < 30 * 24 * 60 * 60 * 1000) {
       return cached.knowledge || null;
     }
     let knowledge = null;
@@ -4566,25 +4396,6 @@
     if (knowledge && normalizeGameLookupName(knowledge.normalizedName || knowledge.canonicalTitle) !== key) return null;
     gameKnowledgeCache[key] = { fetchedAt: new Date().toISOString(), knowledge: knowledge || null };
     return knowledge || null;
-  }
-
-  async function enrichExistingGameKnowledge() {
-    if (existingKnowledgeEnrichmentStarted) return;
-    existingKnowledgeEnrichmentStarted = true;
-    const titles = [...new Map(games.map(gameRecord => [
-      normalizeGameLookupName(gameRecord.game), gameRecord.game
-    ])).values()].slice(0, 24);
-    let changed = false;
-    for (const title of titles) {
-      const key = normalizeGameLookupName(title);
-      const before = JSON.stringify(gameKnowledgeCache[key] || null);
-      await getGameKnowledge(title);
-      if (JSON.stringify(gameKnowledgeCache[key] || null) !== before) changed = true;
-    }
-    if (changed) {
-      saveData();
-      render();
-    }
   }
 
   // Review generation remains behind this local provider boundary so a hosted
@@ -5233,7 +5044,7 @@
         title.game.toLocaleLowerCase() === gameTitle.toLocaleLowerCase()
       ));
       catalog.push({
-        icon: getGameMark(gameTitle),
+        icon: "",
         name: "Top " + gameTitle + " Player",
         description: "Currently leads the Commission's all-time " + gameTitle + " results.",
         rarity: "Game title",
@@ -5286,10 +5097,9 @@
         card.setAttribute("aria-label", hiddenSecret ? "View secret achievement hint" : "View " + item.name + " achievement details");
         card.addEventListener("click", () => openAchievementDetail(index, card));
         const icon = document.createElement("span");
-        icon.className = "badge-icon" + (item.game ? " game-mark" : "");
+        icon.className = "badge-icon";
         icon.setAttribute("aria-hidden", "true");
-        if (item.game && !hiddenSecret) applyGameArtwork(icon, item.game);
-        else icon.textContent = hiddenSecret ? "?" : item.icon;
+        icon.textContent = hiddenSecret ? "?" : item.icon;
         const name = document.createElement("strong");
         name.textContent = hiddenSecret ? "Classified Achievement" : item.name;
         const hint = document.createElement("span");
@@ -5297,7 +5107,7 @@
         hint.textContent = item.earners.length
           ? item.earners.map(entry => entry.player.name).join(", ")
           : item.hint;
-        card.appendChild(icon);
+        if (!item.game) card.appendChild(icon);
         card.appendChild(name);
         card.appendChild(hint);
         grid.appendChild(card);
@@ -5413,83 +5223,8 @@
     return ((Math.abs(hash) % 300) + 25) % 360;
   }
 
-  function getGameMark(gameTitle) {
-    const words = gameTitle.trim().split(/\s+/).filter(Boolean);
-    return (words.length > 1
-      ? words.slice(0, 2).map(word => word[0]).join("")
-      : words[0].slice(0, 2)
-    ).toLocaleUpperCase();
-  }
-
   function applyGameTheme(element, gameTitle) {
     element.style.setProperty("--game-hue", getGameHue(gameTitle));
-  }
-
-  function getCachedGameKnowledge(gameTitle) {
-    return gameKnowledgeCache[normalizeGameLookupName(gameTitle)]?.knowledge || null;
-  }
-
-  function getGameArtGlyph(gameTitle) {
-    const concepts = getCachedGameKnowledge(gameTitle)?.concepts || [];
-    const joined = concepts.join(" ").toLocaleLowerCase();
-    if (/dice/.test(joined)) return "⚄";
-    if (/card|deck|draft/.test(joined)) return "▱";
-    if (/tile|set collection/.test(joined)) return "◇";
-    if (/route/.test(joined)) return "⌁";
-    if (/area control|worker placement/.test(joined)) return "♟";
-    if (/cooperative/.test(joined)) return "◎";
-    return "♟";
-  }
-
-  function applyGameArtwork(element, gameTitle) {
-    element.textContent = "";
-    element.classList.add("has-game-art");
-    applyGameTheme(element, gameTitle);
-    const visual = document.createElement("span");
-    visual.className = "game-art";
-    visual.setAttribute("aria-hidden", "true");
-    const artwork = getCachedGameKnowledge(gameTitle)?.artwork;
-    if (artwork?.url) {
-      const image = document.createElement("img");
-      image.src = artwork.url;
-      image.alt = "";
-      image.loading = "lazy";
-      image.referrerPolicy = "no-referrer";
-      image.addEventListener("error", () => {
-        visual.textContent = getGameArtGlyph(gameTitle);
-        visual.classList.add("game-art-fallback");
-      }, { once: true });
-      visual.appendChild(image);
-    } else {
-      visual.textContent = getGameArtGlyph(gameTitle);
-      visual.classList.add("game-art-fallback");
-    }
-    element.appendChild(visual);
-  }
-
-  function renderGameArtworkCredits() {
-    const credits = document.getElementById("gameArtworkCredits");
-    credits.innerHTML = "";
-    const entries = new Map();
-    Object.values(gameKnowledgeCache).forEach(entry => {
-      const artwork = entry?.knowledge?.artwork;
-      if (artwork?.url && !entries.has(artwork.url)) entries.set(artwork.url, artwork);
-    });
-    if (!entries.size) return;
-    const heading = document.createElement("strong");
-    heading.textContent = "Game artwork credits";
-    credits.appendChild(heading);
-    entries.forEach(artwork => {
-      const line = document.createElement("span");
-      const link = document.createElement("a");
-      link.href = artwork.sourceUrl || artwork.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = artwork.creator || "Wikimedia contributor";
-      line.appendChild(link);
-      line.append(" · " + artwork.license);
-      credits.appendChild(line);
-    });
   }
 
   function openPlayerModal(playerId) {
@@ -5563,15 +5298,14 @@
           card.className = "badge-card" + (badge.dynamic ? " dynamic-title" : "") + (badge.game ? " game-title" : "");
           if (badge.game) applyGameTheme(card, badge.game);
           const icon = document.createElement("span");
-          icon.className = "badge-icon" + (badge.game ? " game-mark" : "");
+          icon.className = "badge-icon";
           icon.setAttribute("aria-hidden", "true");
-          if (badge.game) applyGameArtwork(icon, badge.game);
-          else icon.textContent = badge.icon;
+          icon.textContent = badge.icon;
           const title = document.createElement("strong");
           title.textContent = badge.name;
           const description = document.createElement("p");
           description.textContent = badge.description;
-          card.appendChild(icon);
+          if (!badge.game) card.appendChild(icon);
           card.appendChild(title);
           card.appendChild(description);
 
@@ -5740,15 +5474,7 @@
       getPlayerBadges(leader, 1).forEach(badge => {
         const item = document.createElement("span");
         item.className = "home-leader-badge";
-        if (badge.game) {
-          const art = document.createElement("span");
-          art.className = "home-leader-game-art";
-          applyGameArtwork(art, badge.game);
-          item.appendChild(art);
-          item.append(badge.name);
-        } else {
-          item.textContent = badge.icon + " " + badge.name;
-        }
+        item.textContent = badge.game ? badge.name : badge.icon + " " + badge.name;
         item.title = badge.description;
         leaderBadges.appendChild(item);
       });
@@ -6047,23 +5773,6 @@
               nameCell.appendChild(archived);
             }
 
-            const gameBadges = getGameLeaderTitles(player.id);
-            if (gameBadges.length) {
-              const badgeGroup = document.createElement("span");
-              badgeGroup.className = "standings-badges";
-              badgeGroup.setAttribute("aria-label", "Game leader badges");
-
-              gameBadges.forEach(badge => {
-                const mark = document.createElement("span");
-                mark.className = "standings-game-badge";
-                applyGameArtwork(mark, badge.game);
-                mark.title = badge.name;
-                mark.setAttribute("aria-label", badge.name);
-                applyGameTheme(mark, badge.game);
-                badgeGroup.appendChild(mark);
-              });
-              nameCell.appendChild(badgeGroup);
-            }
             cell.appendChild(nameCell);
           } else {
             cell.textContent = value;
@@ -6097,9 +5806,9 @@
         details.className = "ruling history-entry";
 
         const summary = document.createElement("summary");
-        const cover = document.createElement("span");
-        cover.className = "memory-cover" + (gameRecord.photos && gameRecord.photos.length ? "" : " memory-cover-empty");
         if (gameRecord.photos && gameRecord.photos.length) {
+          const cover = document.createElement("span");
+          cover.className = "memory-cover";
           const coverImage = document.createElement("img");
           coverImage.src = gameRecord.photos[0].dataUrl;
           coverImage.alt = "Game night memory from " + gameRecord.game;
@@ -6116,17 +5825,9 @@
           cover.addEventListener("keydown", event => {
             if (event.key === "Enter" || event.key === " ") openCover(event);
           });
-        } else {
-          const placeholder = document.createElement("span");
-          placeholder.className = "memory-cover-placeholder";
-          applyGameArtwork(placeholder, gameRecord.game);
-          cover.appendChild(placeholder);
+          summary.classList.add("has-memory-cover");
+          summary.appendChild(cover);
         }
-        const mark = document.createElement("span");
-        mark.className = "history-game-mark";
-        applyGameArtwork(mark, gameRecord.game);
-        mark.setAttribute("aria-hidden", "true");
-        applyGameTheme(mark, gameRecord.game);
 
         const heading = document.createElement("span");
         heading.className = "history-heading";
@@ -6174,8 +5875,6 @@
 
         heading.appendChild(primary);
         heading.appendChild(date);
-        summary.appendChild(cover);
-        summary.appendChild(mark);
         summary.appendChild(heading);
         summary.appendChild(chevron);
         details.appendChild(summary);
@@ -6268,10 +5967,6 @@
         details.className = "ruling history-entry legacy-entry";
 
         const summary = document.createElement("summary");
-        const mark = document.createElement("span");
-        mark.className = "history-game-mark legacy-mark";
-        mark.textContent = "LEG";
-        mark.setAttribute("aria-hidden", "true");
 
         const heading = document.createElement("span");
         heading.className = "history-heading";
@@ -6304,7 +5999,6 @@
         primary.appendChild(titleRow);
         primary.appendChild(meta);
         heading.appendChild(primary);
-        summary.appendChild(mark);
         summary.appendChild(heading);
         summary.appendChild(chevron);
         details.appendChild(summary);
@@ -6332,7 +6026,6 @@
     renderMemoryPhotoPreview();
     renderHomePresentation(sortedPlayers);
     renderAchievements(sortedPlayers);
-    renderGameArtworkCredits();
     syncMobileTabState();
   }
 
@@ -6341,7 +6034,6 @@
   saveData();
   window.addEventListener("hashchange", syncMobileTabState);
   render();
-  void enrichExistingGameKnowledge();
 </script>
 
 </body>
