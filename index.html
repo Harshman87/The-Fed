@@ -3510,7 +3510,7 @@
 
 <script>
   const STORAGE_KEY = "fedData";
-  const SCHEMA_VERSION = 2;
+  const SCHEMA_VERSION = 3;
 
   function createId(prefix) {
     if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
@@ -3537,7 +3537,8 @@
       league: localStorage.getItem("fedLeague") || "",
       players: readJson("fedPlayers", []),
       games: readJson("fedGames", []),
-      rulings: readJson("fedRulings", [])
+      rulings: readJson("fedRulings", []),
+      gameKnowledgeCache: {}
     };
   }
 
@@ -3641,12 +3642,41 @@
       }];
     });
 
+    const gameKnowledgeCache = {};
+    if (source.gameKnowledgeCache && typeof source.gameKnowledgeCache === "object" && !Array.isArray(source.gameKnowledgeCache)) {
+      Object.entries(source.gameKnowledgeCache).slice(0, 100).forEach(([key, entry]) => {
+        if (!/^[a-z0-9 ]{1,120}$/.test(key) || !entry || typeof entry !== "object") return;
+        const knowledge = entry.knowledge;
+        if (knowledge !== null && (!knowledge || typeof knowledge !== "object" ||
+            typeof knowledge.canonicalTitle !== "string" || typeof knowledge.summary !== "string" ||
+            !Array.isArray(knowledge.keyTerms) || !Array.isArray(knowledge.concepts))) return;
+        gameKnowledgeCache[key] = {
+          fetchedAt: typeof entry.fetchedAt === "string" ? entry.fetchedAt : "",
+          knowledge: knowledge === null ? null : {
+            version: 1,
+            normalizedName: typeof knowledge.normalizedName === "string" ? knowledge.normalizedName.slice(0, 120) : key,
+            canonicalTitle: knowledge.canonicalTitle.slice(0, 120),
+            theme: typeof knowledge.theme === "string" ? knowledge.theme.slice(0, 700) : "",
+            keyTerms: knowledge.keyTerms.filter(value => typeof value === "string").slice(0, 6).map(value => value.slice(0, 80)),
+            concepts: knowledge.concepts.filter(value => typeof value === "string").slice(0, 6).map(value => value.slice(0, 80)),
+            summary: knowledge.summary.slice(0, 700),
+            source: knowledge.source && typeof knowledge.source === "object" ? {
+              name: typeof knowledge.source.name === "string" ? knowledge.source.name.slice(0, 80) : "",
+              url: typeof knowledge.source.url === "string" ? knowledge.source.url.slice(0, 500) : ""
+            } : { name: "", url: "" },
+            fetchedAt: typeof knowledge.fetchedAt === "string" ? knowledge.fetchedAt : ""
+          }
+        };
+      });
+    }
+
     return {
       schemaVersion: SCHEMA_VERSION,
       league: typeof source.league === "string" ? source.league : "",
       players: normalizedPlayers,
       games: normalizedGames,
-      rulings: Array.isArray(source.rulings) ? source.rulings : []
+      rulings: Array.isArray(source.rulings) ? source.rulings : [],
+      gameKnowledgeCache
     };
   }
 
@@ -3693,6 +3723,7 @@
   let players = state.players;
   let rulings = state.rulings;
   let games = state.games;
+  let gameKnowledgeCache = state.gameKnowledgeCache;
 
   let setupOpen = false;
   let lastFocusedElement = null;
@@ -3761,6 +3792,10 @@
     if (typeof data.league !== "string" || !Array.isArray(data.players) ||
         !Array.isArray(data.games) || !Array.isArray(data.rulings)) {
       throw new Error("The backup is missing required league data.");
+    }
+    if (data.gameKnowledgeCache !== undefined &&
+        (!data.gameKnowledgeCache || typeof data.gameKnowledgeCache !== "object" || Array.isArray(data.gameKnowledgeCache))) {
+      throw new Error("The backup contains an invalid game knowledge cache.");
     }
 
     const playerIds = new Set();
@@ -4333,7 +4368,7 @@
     button.innerHTML = '<span class="submit-spinner" aria-hidden="true"></span>Submitting…';
     await new Promise(resolve => setTimeout(resolve, 180));
 
-    const submitted = reviewGame();
+    const submitted = await reviewGame();
     const currentButton = document.getElementById("gameSubmitButton");
     if (!submitted) {
       currentButton.disabled = false;
@@ -4348,7 +4383,103 @@
     currentButton.textContent = "Submit for Review";
   }
 
-  function reviewGame() {
+  function normalizeGameLookupName(value) {
+    return String(value || "").normalize("NFKC").toLocaleLowerCase("en-US")
+      .replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function conciseKnowledgeSentences(value, count = 2) {
+    const sentences = String(value || "").match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+    return sentences.map(sentence => sentence.trim()).filter(Boolean).slice(0, count).join(" ").slice(0, 700);
+  }
+
+  async function wikipediaClientKnowledgeSource(gameTitle) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6500);
+    try {
+      const endpoint = new URL("https://en.wikipedia.org/w/api.php");
+      endpoint.search = new URLSearchParams({
+        action: "query", generator: "search", gsrsearch: 'intitle:"' + gameTitle + '" board game',
+        gsrlimit: "6", prop: "extracts|info", exintro: "1", explaintext: "1",
+        inprop: "url", format: "json", formatversion: "2", origin: "*"
+      });
+      const response = await fetch(endpoint, { signal: controller.signal });
+      if (!response.ok) return null;
+      const payload = await response.json();
+      const requested = normalizeGameLookupName(gameTitle);
+      const pages = payload?.query?.pages || [];
+      const exact = pages.filter(page => normalizeGameLookupName(
+        String(page.title || "").replace(/\s*\(board game\)\s*$/i, "")
+      ) === requested);
+      if (exact.length !== 1) return null;
+      const page = exact[0];
+      const extract = String(page.extract || "");
+      if (!/\b(board game|card game|tabletop game|strategy game|party game|cooperative game)\b/i.test(extract)) return null;
+      const conceptPatterns = [
+        ["deck building", /deck[- ]build|build(?:ing)? (?:a )?deck/i], ["card drafting", /card draft|drafting cards/i],
+        ["worker placement", /worker placement|place workers/i], ["tile placement", /tile placement|place tiles/i],
+        ["area control", /area control|control (?:of )?(?:areas|territor)/i], ["resource management", /resource management|manage resources/i],
+        ["route building", /route building|build routes|railway route/i], ["engine building", /engine build|tableau build/i],
+        ["deduction", /deduction|deduce|hidden information/i], ["negotiation", /negotiat|trade with other players/i],
+        ["cooperative play", /cooperative|co-operative|players work together/i], ["dice rolling", /dice|die roll/i],
+        ["set collection", /set collection|collect sets/i], ["auction", /auction|bidding/i], ["campaign play", /campaign|legacy game/i]
+      ];
+      const titleWords = new Set(normalizeGameLookupName(page.title).split(" "));
+      const keyTerms = [...new Set((extract.match(/\b[A-Z][A-Za-z0-9'’-]*(?:\s+[A-Z][A-Za-z0-9'’-]*){0,2}\b/g) || [])
+        .filter(term => !titleWords.has(normalizeGameLookupName(term))))].slice(0, 6);
+      return {
+        version: 1,
+        normalizedName: requested,
+        canonicalTitle: String(page.title).replace(/\s*\(board game\)\s*$/i, ""),
+        theme: conciseKnowledgeSentences(extract, 1),
+        keyTerms,
+        concepts: conceptPatterns.filter(([, pattern]) => pattern.test(extract)).map(([label]) => label).slice(0, 6),
+        summary: conciseKnowledgeSentences(extract, 2),
+        source: { name: "Wikipedia", url: page.fullurl || "https://en.wikipedia.org/" },
+        fetchedAt: new Date().toISOString()
+      };
+    } catch (error) {
+      console.warn("Optional game knowledge lookup was unavailable", error);
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  // Ordered provider list: add or replace sources here without changing submission logic.
+  const clientGameKnowledgeSources = [wikipediaClientKnowledgeSource];
+
+  async function getGameKnowledge(gameTitle) {
+    const key = normalizeGameLookupName(gameTitle);
+    if (!key) return null;
+    const cached = gameKnowledgeCache[key];
+    const cachedAt = Date.parse(cached && cached.fetchedAt || "");
+    if (cached && Number.isFinite(cachedAt) && Date.now() - cachedAt < 30 * 24 * 60 * 60 * 1000) {
+      return cached.knowledge || null;
+    }
+    let knowledge = null;
+    for (const source of clientGameKnowledgeSources) {
+      knowledge = await source(gameTitle);
+      if (knowledge) break;
+    }
+    if (knowledge && normalizeGameLookupName(knowledge.normalizedName || knowledge.canonicalTitle) !== key) return null;
+    gameKnowledgeCache[key] = { fetchedAt: new Date().toISOString(), knowledge: knowledge || null };
+    return knowledge || null;
+  }
+
+  // Review generation remains behind this local provider boundary so a hosted
+  // AI provider can be added later without changing validation or storage.
+  function generateLocalFedReview(input) {
+    return generateCaseReport(
+      input.game,
+      input.results,
+      input.note,
+      input.photoCount,
+      input.gameKnowledge
+    );
+  }
+
+  async function reviewGame() {
     if (photoProcessing) {
       alert("Please wait for the selected photos to finish preparing.");
       return false;
@@ -4409,20 +4540,29 @@
       ? games.findIndex(gameRecord => gameRecord.id === editingGameId)
       : -1;
     const existingGame = existingIndex >= 0 ? games[existingIndex] : null;
+    const certifiedResults = results.map(result => ({
+      playerId: result.playerId,
+      name: result.name,
+      place: result.place,
+      points: 1 + (groupCount - (placementGroups.indexOf(result.place) + 1) + 1)
+    }));
+    const gameKnowledge = await getGameKnowledge(game);
     const gameRecord = {
       id: existingGame ? existingGame.id : createId("game"),
       game: game,
       recordedAt: existingGame ? existingGame.recordedAt : new Date().toISOString(),
-      results: results.map(result => ({
-        playerId: result.playerId,
-        name: result.name,
-        place: result.place,
-        points: 1 + (groupCount - (placementGroups.indexOf(result.place) + 1) + 1)
-      })),
+      results: certifiedResults,
       summary: rulingSummary,
       note: note,
       photos: pendingGamePhotos.map(photo => ({ ...photo })),
-      report: generateCaseReport(game, results, note, pendingGamePhotos.length)
+      report: generateLocalFedReview({
+        game,
+        results: certifiedResults,
+        note,
+        photoCount: pendingGamePhotos.length,
+        gameKnowledge,
+        leagueHistory: games
+      })
     };
 
     const prospectiveGames = existingGame
@@ -4453,7 +4593,7 @@
     render();
   }
 
-  function generateCaseReport(game, results, note = "", photoCount = 0) {
+  function generateCaseReport(game, results, note = "", photoCount = 0, gameKnowledge = null) {
     const groups = [...new Set(results.map(result => result.place))]
       .sort((a, b) => a - b)
       .map(place => results.filter(result => result.place === place));
@@ -4739,6 +4879,14 @@
       gameFlavor = "The mercenary file contains exhausted cards, questionable coordination, and enough dungeon testimony for a separate inquiry.";
     } else if (/viticulture/.test(lowerGame)) {
       gameFlavor = "The vineyard accounts matured acceptably, although several workers appear to have been assigned with suspicious efficiency.";
+    } else if (gameKnowledge && (gameKnowledge.concepts?.length || gameKnowledge.keyTerms?.length)) {
+      const publishedTerms = [...(gameKnowledge.concepts || []), ...(gameKnowledge.keyTerms || [])]
+        .filter(term => typeof term === "string" && term.trim()).slice(0, 3);
+      gameFlavor = choose([
+        "The Commission reviewed the published machinery involving " + publishedTerms.join(", ") + " without assuming which of it appeared in the certified match.",
+        gameLabel + " brought its recognized themes of " + publishedTerms.join(", ") + " to the docket; the actual result remains limited to the filed evidence.",
+        "Reference materials identify " + publishedTerms.join(", ") + " as part of " + gameLabel + ", all useful for atmosphere and none accepted as proof of an unreported table event."
+      ], 2);
     } else {
       gameFlavor = choose([
         "The cards, tokens, and disputed table space of " + gameLabel + " have been inventoried and released back into circulation.",
