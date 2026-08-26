@@ -3086,6 +3086,100 @@
 
     .achievements-group h3 { margin: 0 0 10px; }
 
+    /* MORE PAGE — START: grouped, progressive-disclosure menu. */
+    .more-page { display: grid; gap: 26px; }
+    .more-page-header { margin-bottom: -4px; padding: 4px 2px 0; }
+    .more-page-header h2 { margin: 0 0 6px; }
+    .more-page-header .section-note { margin: 0; }
+    .more-section { min-width: 0; }
+    .more-section-title {
+      margin: 0 0 9px 2px;
+      color: #99a49e;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .more-menu {
+      overflow: hidden;
+      background: linear-gradient(150deg, rgba(15, 27, 23, .99), rgba(8, 15, 13, .99));
+      border: 1px solid #35443d;
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .025);
+    }
+    .more-item + .more-item { border-top: 1px solid #2a3832; }
+    .more-item > summary {
+      display: grid;
+      min-height: 72px;
+      padding: 14px 16px;
+      grid-template-columns: 42px minmax(0, 1fr) 22px;
+      align-items: center;
+      gap: 12px;
+      list-style: none;
+      cursor: pointer;
+    }
+    .more-item > summary::-webkit-details-marker { display: none; }
+    .more-item > summary:hover { background: rgba(255, 255, 255, .025); }
+    .more-item > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+    .more-item[open] > summary {
+      background: rgba(215, 170, 62, .06);
+      border-bottom: 1px solid #2a3832;
+    }
+    .more-item-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      color: var(--gold-soft);
+      background: rgba(215, 170, 62, .09);
+      border: 1px solid rgba(215, 170, 62, .3);
+      border-radius: 10px;
+      font-size: 18px;
+    }
+    .more-item-copy { min-width: 0; }
+    .more-item-copy strong { display: block; color: #f0eee8; font-size: 15px; }
+    .more-item-copy small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .more-chevron {
+      color: #89958f;
+      font-size: 20px;
+      text-align: center;
+      transition: transform .16s ease, color .16s ease;
+    }
+    .more-item[open] .more-chevron { color: var(--gold-soft); transform: rotate(90deg); }
+    .more-item-content { padding: 18px 20px 20px 74px; }
+    .more-item-content > :first-child { margin-top: 0; }
+    .more-item-content > :last-child { margin-bottom: 0; }
+    .more-item-content .section-note { margin-bottom: 15px; }
+    .more-item-content #playerList { margin-top: 14px; }
+    .more-item-content .backup-actions { margin-top: 4px; }
+    .more-item-content .achievements-groups { margin-top: 4px; }
+    .more-done-row { display: flex; justify-content: flex-end; margin-top: 14px; }
+    .more-done-row button { margin: 0; }
+
+    @media (max-width: 600px) {
+      .more-page { gap: 22px; }
+      .more-page-header { padding-inline: 3px; }
+      .more-page-header h2 { font-size: 30px; }
+      .more-menu { border-radius: 11px; }
+      .more-item > summary {
+        min-height: 68px;
+        padding: 12px;
+        grid-template-columns: 40px minmax(0, 1fr) 18px;
+        gap: 10px;
+      }
+      .more-item-icon { width: 38px; height: 38px; border-radius: 9px; }
+      .more-item-content { padding: 16px 13px 18px; }
+      .more-item-copy small { font-size: 11px; }
+      .more-done-row button { width: 100%; }
+    }
+    /* MORE PAGE — END */
+
     .achievements-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
@@ -3194,44 +3288,70 @@
 
 <div class="container">
 
-  <div id="setupPanel">
-    <div class="card">
-      <h2>League Setup</h2>
-      <p class="section-note">Establish the jurisdiction under which all victories and excuses will be reviewed.</p>
-      <label class="field-label" for="leagueName">League name</label>
-      <input id="leagueName" placeholder="e.g. Thursday Night Commission">
-      <button onclick="saveLeague()">Save League</button>
-      <p id="leagueDisplay">No league created yet.</p>
-    </div>
+  <div id="setupPanel" class="more-page">
+    <header class="more-page-header">
+      <h2>More</h2>
+      <p class="section-note">Manage the league, protect its records, and explore Commission features.</p>
+    </header>
 
-    <div class="card">
-      <h2>League Players</h2>
-      <p class="section-note">Add the parties eligible to appear in official proceedings.</p>
-      <label class="field-label" for="playerName">Player name</label>
-      <input id="playerName" placeholder="Enter a player">
-      <button onclick="addPlayer()">Add Player</button>
-      <p id="playerManagementStatus" class="player-management-status" role="status" aria-live="polite"></p>
-      <div id="playerList"></div>
-      <button id="finishSetupButton" onclick="toggleSetup()">Done</button>
-    </div>
-
-    <div class="card">
-      <h2>League Backup</h2>
-      <p class="section-note">Download a complete copy of this league or restore one from a previous export.</p>
-      <div class="backup-actions">
-        <button type="button" onclick="exportBackup()">Export Backup</button>
-        <button type="button" onclick="document.getElementById('backupFile').click()">Import Backup</button>
+    <section class="more-section" aria-labelledby="leagueManagementTitle">
+      <h3 class="more-section-title" id="leagueManagementTitle">League Management</h3>
+      <div class="more-menu">
+        <details class="more-item" id="moreSetupItem">
+          <summary><span class="more-item-icon" aria-hidden="true">⚙</span><span class="more-item-copy"><strong>Setup</strong><small>League name and identity</small></span><span class="more-chevron" aria-hidden="true">›</span></summary>
+          <div class="more-item-content">
+            <p class="section-note">Establish the jurisdiction under which all victories and excuses will be reviewed.</p>
+            <label class="field-label" for="leagueName">League name</label>
+            <input id="leagueName" placeholder="e.g. Thursday Night Commission">
+            <button onclick="saveLeague()">Save League</button>
+            <p id="leagueDisplay">No league created yet.</p>
+          </div>
+        </details>
+        <details class="more-item" id="morePlayersItem">
+          <summary><span class="more-item-icon" aria-hidden="true">♟</span><span class="more-item-copy"><strong>Players</strong><small>Add, rename, archive, or restore members</small></span><span class="more-chevron" aria-hidden="true">›</span></summary>
+          <div class="more-item-content">
+            <p class="section-note">Add the parties eligible to appear in official proceedings.</p>
+            <label class="field-label" for="playerName">Player name</label>
+            <input id="playerName" placeholder="Enter a player">
+            <button onclick="addPlayer()">Add Player</button>
+            <p id="playerManagementStatus" class="player-management-status" role="status" aria-live="polite"></p>
+            <div id="playerList"></div>
+            <div class="more-done-row"><button id="finishSetupButton" onclick="toggleSetup()">Done</button></div>
+          </div>
+        </details>
       </div>
-      <input id="backupFile" type="file" accept="application/json,.json" hidden onchange="importBackup(event)">
-      <p id="backupStatus" class="backup-status" role="status" aria-live="polite"></p>
-    </div>
+    </section>
 
-    <div class="card" id="achievementsPanel">
-      <h2>Achievements</h2>
-      <p class="section-note">The complete Commission commendation ledger. Select a badge to inspect its record.</p>
-      <div id="achievementsGallery" class="achievements-groups"></div>
-    </div>
+    <section class="more-section" aria-labelledby="dataBackupTitle">
+      <h3 class="more-section-title" id="dataBackupTitle">Data &amp; Backup</h3>
+      <div class="more-menu">
+        <details class="more-item">
+          <summary><span class="more-item-icon" aria-hidden="true">⇅</span><span class="more-item-copy"><strong>Import &amp; Export</strong><small>Download a backup or restore league data</small></span><span class="more-chevron" aria-hidden="true">›</span></summary>
+          <div class="more-item-content">
+            <p class="section-note">Download a complete copy of this league or restore one from a previous export.</p>
+            <div class="backup-actions">
+              <button type="button" onclick="exportBackup()">Export Backup</button>
+              <button type="button" onclick="document.getElementById('backupFile').click()">Import Backup</button>
+            </div>
+            <input id="backupFile" type="file" accept="application/json,.json" hidden onchange="importBackup(event)">
+            <p id="backupStatus" class="backup-status" role="status" aria-live="polite"></p>
+          </div>
+        </details>
+      </div>
+    </section>
 
+    <section class="more-section" aria-labelledby="leagueFeaturesTitle">
+      <h3 class="more-section-title" id="leagueFeaturesTitle">League Features</h3>
+      <div class="more-menu">
+        <details class="more-item" id="achievementsPanel">
+          <summary><span class="more-item-icon" aria-hidden="true">★</span><span class="more-item-copy"><strong>Achievements</strong><small>Browse commendations, titles, and secret badges</small></span><span class="more-chevron" aria-hidden="true">›</span></summary>
+          <div class="more-item-content">
+            <p class="section-note">The complete Commission commendation ledger. Select a badge to inspect its record.</p>
+            <div id="achievementsGallery" class="achievements-groups"></div>
+          </div>
+        </details>
+      </div>
+    </section>
   </div>
 
   <section id="homePanel" class="dashboard-snapshot" aria-label="League snapshot">
@@ -5569,6 +5689,11 @@
     const leagueIsReady = Boolean(league) && activePlayers.length >= 2;
     const setupPanel = document.getElementById("setupPanel");
     setupPanel.style.display = leagueIsReady && !setupOpen ? "none" : "block";
+
+    if (!leagueIsReady) {
+      document.getElementById("moreSetupItem").open = !league;
+      document.getElementById("morePlayersItem").open = Boolean(league);
+    }
 
     document.getElementById("manageLeagueButton").style.display =
       leagueIsReady ? "inline-block" : "none";
