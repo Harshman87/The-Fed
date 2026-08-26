@@ -2746,6 +2746,205 @@
       to { opacity: 1; transform: translateY(0); }
     }
     /* MOBILE TAB SHELL — END */
+
+    /* GAME NIGHT MEMORIES — START */
+    .form-title-line,
+    .form-step-title-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-title-line { margin-bottom: 16px; }
+
+    .form-title-line h2,
+    .form-step-title-line h3 { margin-bottom: 0; }
+
+    .info-tip { position: relative; display: inline-flex; flex: 0 0 auto; }
+
+    .info-tip-button {
+      display: grid;
+      width: 26px;
+      min-height: 26px;
+      margin: 0;
+      padding: 0;
+      place-items: center;
+      color: var(--gold-soft);
+      background: transparent;
+      border: 1px solid rgba(216, 173, 69, .52);
+      border-radius: 50%;
+      box-shadow: none;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: lowercase;
+    }
+
+    .info-tip-content {
+      position: absolute;
+      top: calc(100% + 9px);
+      left: 50%;
+      z-index: 80;
+      width: min(280px, calc(100vw - 40px));
+      padding: 9px 11px;
+      color: #f0eee8;
+      background: #071525;
+      border: 1px solid rgba(216, 173, 69, .5);
+      border-radius: 8px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .42);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -3px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+
+    .info-tip:hover .info-tip-content,
+    .info-tip:focus-within .info-tip-content {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .submit-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      margin-right: 7px;
+      vertical-align: -2px;
+      border: 2px solid rgba(23, 20, 12, .3);
+      border-top-color: #17140c;
+      border-radius: 50%;
+      animation: submit-spin .65s linear infinite;
+    }
+
+    .submit-check { margin-right: 6px; font-size: 16px; }
+
+    @keyframes submit-spin { to { transform: rotate(360deg); } }
+
+    .memory-photo-controls {
+      display: flex;
+      margin-top: 10px;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .memory-photo-button { margin: 0; background: #10243a; border-color: #49627a; }
+
+    .memory-photo-status { color: var(--muted); font-size: 12px; }
+
+    .memory-photo-preview,
+    .memory-photo-gallery {
+      display: grid;
+      margin-top: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .memory-photo-preview-item { position: relative; min-width: 0; }
+
+    .memory-photo-preview img,
+    .memory-photo-gallery img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border: 1px solid rgba(216, 173, 69, .34);
+      border-radius: 8px;
+    }
+
+    .memory-photo-remove {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 30px;
+      min-height: 30px;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      background: rgba(9, 14, 20, .88);
+      border-color: rgba(255, 255, 255, .45);
+      border-radius: 50%;
+    }
+
+    .memory-photo-prompt {
+      display: flex;
+      margin-top: 12px;
+      padding: 10px 12px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: #d9d7cf;
+      background: rgba(216, 173, 69, .07);
+      border: 1px solid rgba(216, 173, 69, .3);
+      border-radius: 9px;
+      font-size: 12px;
+    }
+
+    .memory-photo-prompt[hidden] { display: none; }
+
+    .memory-photo-prompt button { min-height: 38px; margin: 0; white-space: nowrap; }
+
+    .memory-cover {
+      position: relative;
+      display: block;
+      width: 88px;
+      min-width: 88px;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(216, 173, 69, .2), transparent 22%),
+        linear-gradient(145deg, #102943, #07131f);
+      border: 1px solid rgba(216, 173, 69, .34);
+      border-radius: 8px;
+    }
+
+    .memory-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+    .memory-cover-placeholder {
+      display: grid;
+      height: 100%;
+      place-items: center;
+      color: var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 600px) {
+      .form-title-line { margin-bottom: 12px; }
+
+      .form-step-title-line { align-items: flex-start; }
+
+      .form-step-title-line .info-tip { margin-top: 1px; }
+
+      .info-tip-content { left: auto; right: -5px; transform: translateY(-3px); }
+
+      .info-tip:hover .info-tip-content,
+      .info-tip:focus-within .info-tip-content { transform: translateY(0); }
+
+      .memory-photo-preview,
+      .memory-photo-gallery { gap: 6px; }
+
+      .memory-photo-prompt { align-items: flex-start; flex-direction: column; }
+
+      .memory-photo-prompt button { width: 100%; }
+
+      #historyPanel .ruling summary { grid-template-columns: 82px minmax(0, 1fr) auto; }
+
+      #historyPanel .history-game-mark { display: none; }
+
+      .memory-cover { width: 82px; min-width: 82px; }
+
+      #homeLatestRuling .memory-cover { width: 72px; min-width: 72px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .submit-spinner { animation-duration: 1.4s !important; }
+    }
+    /* GAME NIGHT MEMORIES — END */
     /* HISTORY-INSPIRED TRIAL THEME — END */
 
     @media (max-height: 500px) and (orientation: landscape) {
@@ -2870,8 +3069,13 @@
   </section>
 
   <div id="gameFormCard" class="card">
-    <h2 id="gameFormTitle">Submit Game</h2>
-    <p id="gameFormNote" class="section-note">File a completed game for immediate review and binding judgment.</p>
+    <div class="form-title-line">
+      <h2 id="gameFormTitle">Submit Game</h2>
+      <span class="info-tip">
+        <button class="info-tip-button" type="button" aria-label="About submitting a game" aria-describedby="gameFormNote">i</button>
+        <span id="gameFormNote" class="info-tip-content" role="tooltip">File complete game for immediate review and binding judgment.</span>
+      </span>
+    </div>
 
     <div class="form-step">
       <h3 class="form-step-heading"><span class="step-number">1</span>Game</h3>
@@ -2886,23 +3090,38 @@
     </div>
 
     <div class="form-step">
-      <h3 class="form-step-heading"><span class="step-number">3</span>Finishing order</h3>
+      <div class="form-step-title-line">
+        <h3 class="form-step-heading"><span class="step-number">3</span>Finishing order</h3>
+        <span class="info-tip">
+          <button class="info-tip-button" type="button" aria-label="About finishing order" aria-describedby="finishingOrderHelp">i</button>
+          <span id="finishingOrderHelp" class="info-tip-content" role="tooltip">Team game or tie? Give teammates the same place, such as first, first, second.</span>
+        </span>
+      </div>
       <div id="finishingOrder">
         <p class="empty-order">Select players above first.</p>
       </div>
-      <p class="order-note">Team game or tie? Give teammates the same place, such as 1st, 1st, 2nd, 2nd.</p>
     </div>
 
     <div class="form-step optional-step">
       <h3 class="form-step-heading"><span class="step-number">4</span>Optional context</h3>
-      <label class="field-label" for="gameNotes">Game Night Notes</label>
-      <p class="field-help">Funny moments, upsets, or anything worth remembering.</p>
+      <label class="field-label" for="gameNotes">Game Night Memories (Optional)</label>
+      <p class="field-help">Add a funny moment, inside joke, or upload photos from your game night. These can be featured in your AI Fed Review and saved in your Memories timeline.</p>
       <textarea id="gameNotes" maxlength="500" placeholder="Add a quick note for the record"></textarea>
+      <div class="memory-photo-controls">
+        <button class="memory-photo-button" type="button" onclick="document.getElementById('gamePhotos').click()">📷 Add Photos</button>
+        <input id="gamePhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden onchange="handleGamePhotos(event)">
+        <span id="memoryPhotoStatus" class="memory-photo-status" role="status" aria-live="polite"></span>
+      </div>
+      <div id="memoryPhotoPreview" class="memory-photo-preview" aria-label="Selected memory photos"></div>
     </div>
 
     <div class="form-submit-area">
-      <button id="gameSubmitButton" class="submit-button" onclick="reviewGame()">Submit for Review</button>
+      <button id="gameSubmitButton" class="submit-button" onclick="submitGame()" aria-live="polite">Submit for Review</button>
       <button id="cancelEditButton" class="edit-cancel" type="button" onclick="cancelEdit()" hidden>Cancel Edit</button>
+    </div>
+    <div id="memoryPhotoPrompt" class="memory-photo-prompt" role="status" hidden>
+      <span>Have a group photo? Add it to this memory.</span>
+      <button id="memoryPhotoPromptButton" type="button">📷 Add Photo</button>
     </div>
   </div>
 
@@ -2928,8 +3147,8 @@
   </div>
 
   <div id="historyPanel" class="card">
-    <h2>Game History</h2>
-    <p class="section-note">Every sanctioned result and Fed ruling, preserved for future disputes.</p>
+    <h2>Memories</h2>
+    <p class="section-note">Game nights, photos, results, and Fed rulings—preserved for future disputes and better stories.</p>
     <div id="undoNotice" class="undo-notice" role="status" aria-live="polite" hidden>
       <span id="undoMessage"></span>
       <button type="button" onclick="undoDelete()">Undo</button>
@@ -2946,7 +3165,7 @@
   <a href="#homePanel"><span class="tab-icon" aria-hidden="true">⌂</span><span>Home</span></a>
   <a href="#standingsPanel"><span class="tab-icon" aria-hidden="true">▥</span><span>Standings</span></a>
   <a class="tab-submit" href="#gameFormCard"><span class="tab-icon" aria-hidden="true">+</span><span>Submit</span></a>
-  <a href="#historyPanel"><span class="tab-icon" aria-hidden="true">▤</span><span>History</span></a>
+  <a href="#historyPanel"><span class="tab-icon" aria-hidden="true">▤</span><span>Memories</span></a>
   <a href="#setupPanel"><span class="tab-icon" aria-hidden="true">•••</span><span>More</span></a>
 </nav>
 <!-- MOBILE TAB SHELL — END -->
@@ -2970,7 +3189,7 @@
 
 <script>
   const STORAGE_KEY = "fedData";
-  const SCHEMA_VERSION = 1;
+  const SCHEMA_VERSION = 2;
 
   function createId(prefix) {
     if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
@@ -3085,6 +3304,18 @@
         results: results,
         summary: typeof game.summary === "string" ? game.summary : "",
         note: typeof game.note === "string" ? game.note.slice(0, 500) : "",
+        photos: Array.isArray(game.photos) ? game.photos
+          .filter(photo => photo && typeof photo.id === "string" &&
+            typeof photo.dataUrl === "string" &&
+            /^data:image\/(jpeg|png|webp);base64,/.test(photo.dataUrl) &&
+            photo.dataUrl.length <= 750000)
+          .slice(0, 3)
+          .map(photo => ({
+            id: photo.id,
+            name: typeof photo.name === "string" ? photo.name.slice(0, 100) : "Game night photo",
+            type: typeof photo.type === "string" ? photo.type : "image/jpeg",
+            dataUrl: photo.dataUrl
+          })) : [],
         report: game.report
       }];
     });
@@ -3147,6 +3378,9 @@
   let editingGameId = null;
   let deletedGameUndo = null;
   let undoTimer = null;
+  let pendingGamePhotos = [];
+  let photoProcessing = false;
+  let lastSubmittedGameId = null;
 
   function saveData() {
     recalculateStandings(state);
@@ -3244,6 +3478,18 @@
       if (!placements.every((place, index) => place === index + 1)) {
         throw new Error("The backup contains nonconsecutive finishing places.");
       }
+
+      if (game.photos !== undefined && (!Array.isArray(game.photos) || game.photos.length > 3)) {
+        throw new Error("The backup contains invalid memory photos.");
+      }
+      (game.photos || []).forEach(photo => {
+        if (!photo || typeof photo.id !== "string" || !photo.id.trim() ||
+            typeof photo.dataUrl !== "string" ||
+            !/^data:image\/(jpeg|png|webp);base64,/.test(photo.dataUrl) ||
+            photo.dataUrl.length > 750000) {
+          throw new Error("The backup contains an invalid memory photo.");
+        }
+      });
     });
 
     return normalizeState(data);
@@ -3256,7 +3502,7 @@
     if (!file) return;
 
     try {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 12 * 1024 * 1024) {
         throw new Error("The selected backup is too large.");
       }
 
@@ -3462,17 +3708,138 @@
     return "th";
   }
 
+  function renderMemoryPhotoPreview() {
+    const preview = document.getElementById("memoryPhotoPreview");
+    const status = document.getElementById("memoryPhotoStatus");
+    preview.innerHTML = "";
+    pendingGamePhotos.forEach(photo => {
+      const item = document.createElement("div");
+      item.className = "memory-photo-preview-item";
+      const image = document.createElement("img");
+      image.src = photo.dataUrl;
+      image.alt = photo.name || "Selected game night photo";
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "memory-photo-remove";
+      remove.textContent = "×";
+      remove.setAttribute("aria-label", "Remove " + (photo.name || "photo"));
+      remove.addEventListener("click", () => {
+        pendingGamePhotos = pendingGamePhotos.filter(candidate => candidate.id !== photo.id);
+        renderMemoryPhotoPreview();
+      });
+      item.appendChild(image);
+      item.appendChild(remove);
+      preview.appendChild(item);
+    });
+    status.textContent = photoProcessing
+      ? "Preparing photos…"
+      : pendingGamePhotos.length
+        ? pendingGamePhotos.length + " of 3 photos ready"
+        : "Up to 3 photos";
+  }
+
+  function compressMemoryPhoto(file) {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith("image/")) {
+        reject(new Error("Choose a JPG, PNG, or WebP image."));
+        return;
+      }
+      if (file.size > 12 * 1024 * 1024) {
+        reject(new Error("Each photo must be smaller than 12 MB."));
+        return;
+      }
+
+      const sourceUrl = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => {
+        URL.revokeObjectURL(sourceUrl);
+        const scale = Math.min(1, 720 / Math.max(image.naturalWidth, image.naturalHeight));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(blob => {
+          if (!blob) {
+            reject(new Error("That photo could not be prepared."));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = String(reader.result || "");
+            if (dataUrl.length > 750000) {
+              reject(new Error("That photo remains too large after compression."));
+              return;
+            }
+            resolve({
+              id: createId("photo"),
+              name: file.name.slice(0, 100) || "Game night photo",
+              type: "image/jpeg",
+              dataUrl: dataUrl
+            });
+          };
+          reader.onerror = () => reject(new Error("That photo could not be read."));
+          reader.readAsDataURL(blob);
+        }, "image/jpeg", .68);
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(sourceUrl);
+        reject(new Error("That image could not be opened."));
+      };
+      image.src = sourceUrl;
+    });
+  }
+
+  async function handleGamePhotos(event) {
+    const input = event.target;
+    const available = Math.max(0, 3 - pendingGamePhotos.length);
+    const files = Array.from(input.files || []).slice(0, available);
+    input.value = "";
+    if (!files.length) {
+      document.getElementById("memoryPhotoStatus").textContent = available
+        ? "Choose up to " + available + " more photo" + (available === 1 ? "" : "s")
+        : "Three-photo limit reached";
+      return;
+    }
+
+    photoProcessing = true;
+    renderMemoryPhotoPreview();
+    let photoError = "";
+    try {
+      for (const file of files) {
+        pendingGamePhotos.push(await compressMemoryPhoto(file));
+      }
+    } catch (error) {
+      photoError = error.message;
+    } finally {
+      photoProcessing = false;
+      renderMemoryPhotoPreview();
+      if (photoError) document.getElementById("memoryPhotoStatus").textContent = photoError;
+    }
+  }
+
+  function addPhotoToMemory(gameId) {
+    lastSubmittedGameId = null;
+    startEdit(gameId);
+    document.getElementById("gamePhotos").click();
+  }
+
   function clearGameForm() {
     document.getElementById("gameName").value = "";
     document.getElementById("gameNotes").value = "";
+    pendingGamePhotos = [];
+    document.getElementById("gamePhotos").value = "";
+    renderMemoryPhotoPreview();
   }
 
   function startEdit(gameId) {
     const gameRecord = games.find(game => game.id === gameId);
     if (!gameRecord) return;
 
+    pendingGamePhotos = (gameRecord.photos || []).map(photo => ({ ...photo }));
     editingGameId = gameId;
     render();
+    renderMemoryPhotoPreview();
     document.getElementById("gameName").value = gameRecord.game;
     document.getElementById("gameNotes").value = gameRecord.note || "";
 
@@ -3551,7 +3918,33 @@
     render();
   }
 
+  async function submitGame() {
+    const button = document.getElementById("gameSubmitButton");
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.innerHTML = '<span class="submit-spinner" aria-hidden="true"></span>Submitting…';
+    await new Promise(resolve => setTimeout(resolve, 180));
+
+    const submitted = reviewGame();
+    const currentButton = document.getElementById("gameSubmitButton");
+    if (!submitted) {
+      currentButton.disabled = false;
+      currentButton.textContent = originalText;
+      return;
+    }
+
+    currentButton.disabled = true;
+    currentButton.innerHTML = '<span class="submit-check" aria-hidden="true">✓</span>Game submitted';
+    await new Promise(resolve => setTimeout(resolve, 650));
+    currentButton.disabled = false;
+    currentButton.textContent = "Submit for Review";
+  }
+
   function reviewGame() {
+    if (photoProcessing) {
+      alert("Please wait for the selected photos to finish preparing.");
+      return false;
+    }
     const game =
       document.getElementById("gameName").value.trim();
     const note = document.getElementById("gameNotes").value.trim().slice(0, 500);
@@ -3564,12 +3957,12 @@
 
     if (!game) {
       alert("Enter the game played.");
-      return;
+      return false;
     }
 
     if (participantIds.length < 2) {
       alert("Select at least two players.");
-      return;
+      return false;
     }
 
     const placeSelectors = Array.from(
@@ -3583,7 +3976,7 @@
 
     if (!hasConsecutivePlaces) {
       alert("Use consecutive places starting with 1st. Players on the same team may share a place.");
-      return;
+      return false;
     }
 
     const results = placeSelectors
@@ -3620,8 +4013,17 @@
       })),
       summary: rulingSummary,
       note: note,
-      report: generateCaseReport(game, results, note)
+      photos: pendingGamePhotos.map(photo => ({ ...photo })),
+      report: generateCaseReport(game, results, note, pendingGamePhotos.length)
     };
+
+    const prospectiveGames = existingGame
+      ? games.map((record, index) => index === existingIndex ? gameRecord : record)
+      : [gameRecord, ...games];
+    if (JSON.stringify({ ...state, games: prospectiveGames }).length > 4500000) {
+      alert("This device's memory storage is nearly full. Remove one or more photos, then try again. Export a backup before clearing older memories.");
+      return false;
+    }
 
     if (existingGame) {
       games.splice(existingIndex, 1, gameRecord);
@@ -3630,10 +4032,12 @@
     }
 
     editingGameId = null;
+    lastSubmittedGameId = gameRecord.photos.length ? null : gameRecord.id;
     clearGameForm();
 
     saveData();
     render();
+    return true;
   }
 
   function toggleSetup() {
@@ -3641,7 +4045,7 @@
     render();
   }
 
-  function generateCaseReport(game, results, note = "") {
+  function generateCaseReport(game, results, note = "", photoCount = 0) {
     const groups = [...new Set(results.map(result => result.place))]
       .sort((a, b) => a - b)
       .map(place => results.filter(result => result.place === place));
@@ -3649,7 +4053,7 @@
     const runnersUp = (groups[1] || []).map(result => result.name);
     const last = groups[groups.length - 1].map(result => result.name);
     const cleanNote = note.trim();
-    const signature = [game, cleanNote, ...results.map(result => result.name + result.place)].join("|");
+    const signature = [game, cleanNote, photoCount, ...results.map(result => result.name + result.place)].join("|");
 
     let seed = 0;
     for (const character of signature) {
@@ -3939,7 +4343,7 @@
       ], 2);
     }
 
-    const closings = [
+    const standardClosings = [
       "The result is final until the next game night produces a louder argument.",
       "The standings may now proceed, subject only to snacks and future regulatory interference.",
       "This closes the file, opens the rematch window, and settles absolutely nothing socially.",
@@ -3950,6 +4354,13 @@
       "The finding stands until future play creates a more convenient version of events.",
       "The Commission has signed the result and misplaced the form required to challenge it."
     ];
+    const photoClosings = [
+      "Photographic evidence has been attached to the file, making future denials considerably less practical.",
+      "The submitted game-night photos now accompany the ruling as visual evidence of morale before the appeals began.",
+      "The memory file includes " + photoCount + " photograph" + (photoCount === 1 ? "" : "s") + ", each retained for future nostalgia and cross-examination.",
+      "The Commission has preserved the photographic record so this version of events can age with appropriate dignity."
+    ];
+    const closings = photoCount ? photoClosings : standardClosings;
 
     return [choose(openings), resultFinding, noteFinding, gameFlavor, choose(closings, 3)].join(" ");
   }
@@ -4348,10 +4759,18 @@
       editingGame ? "Edit Game" : "Submit Game";
     document.getElementById("gameFormNote").textContent = editingGame
       ? "Update this filing. Standings will be recalculated from the revised record."
-      : "File a completed game for immediate review and binding judgment.";
+      : "File complete game for immediate review and binding judgment.";
     document.getElementById("gameSubmitButton").textContent =
       editingGame ? "Save Revised Ruling" : "Submit for Review";
     document.getElementById("cancelEditButton").hidden = !editingGame;
+    const memoryPrompt = document.getElementById("memoryPhotoPrompt");
+    const promptGame = lastSubmittedGameId
+      ? games.find(gameRecord => gameRecord.id === lastSubmittedGameId)
+      : null;
+    memoryPrompt.hidden = !promptGame;
+    document.getElementById("memoryPhotoPromptButton").onclick = promptGame
+      ? () => addPhotoToMemory(promptGame.id)
+      : null;
 
     const gameTitles = document.getElementById("gameTitles");
     gameTitles.innerHTML = "";
@@ -4575,6 +4994,19 @@
         details.className = "ruling history-entry";
 
         const summary = document.createElement("summary");
+        const cover = document.createElement("span");
+        cover.className = "memory-cover" + (gameRecord.photos && gameRecord.photos.length ? "" : " memory-cover-empty");
+        if (gameRecord.photos && gameRecord.photos.length) {
+          const coverImage = document.createElement("img");
+          coverImage.src = gameRecord.photos[0].dataUrl;
+          coverImage.alt = "Game night memory from " + gameRecord.game;
+          cover.appendChild(coverImage);
+        } else {
+          const placeholder = document.createElement("span");
+          placeholder.className = "memory-cover-placeholder";
+          placeholder.textContent = getGameMark(gameRecord.game);
+          cover.appendChild(placeholder);
+        }
         const mark = document.createElement("span");
         mark.className = "history-game-mark";
         mark.textContent = getGameMark(gameRecord.game);
@@ -4627,6 +5059,7 @@
 
         heading.appendChild(primary);
         heading.appendChild(date);
+        summary.appendChild(cover);
         summary.appendChild(mark);
         summary.appendChild(heading);
         summary.appendChild(chevron);
@@ -4659,6 +5092,18 @@
           });
 
         details.appendChild(order);
+
+        if (gameRecord.photos && gameRecord.photos.length) {
+          const gallery = document.createElement("div");
+          gallery.className = "memory-photo-gallery";
+          gameRecord.photos.forEach((photo, photoIndex) => {
+            const image = document.createElement("img");
+            image.src = photo.dataUrl;
+            image.alt = "Game night memory " + (photoIndex + 1) + " from " + gameRecord.game;
+            gallery.appendChild(image);
+          });
+          details.appendChild(gallery);
+        }
 
         const review = document.createElement("div");
         review.className = "fed-review";
@@ -4760,6 +5205,7 @@
 
     }
 
+    renderMemoryPhotoPreview();
     renderHomePresentation(sortedPlayers);
   }
 
