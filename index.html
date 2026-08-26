@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- GitHub Pages controls the real HTTP headers; these are browser-level fallbacks. -->
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <!-- Bump this value with every published revision of the root index.html. -->
+  <meta name="build-version" content="2026.08.26.1">
   <title>The Fed</title>
 
   <style>
@@ -3154,6 +3160,38 @@
     .more-item-content .achievements-groups { margin-top: 4px; }
     .more-done-row { display: flex; justify-content: flex-end; margin-top: 14px; }
     .more-done-row button { margin: 0; }
+    .build-info {
+      margin: -8px 2px 0;
+      color: #75817b;
+      font-size: 10px;
+      letter-spacing: .05em;
+      text-align: right;
+    }
+    .build-info code { color: #aab3ae; font-family: inherit; }
+
+    .update-banner {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 150;
+      display: grid;
+      width: min(390px, calc(100% - 36px));
+      padding: 14px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      color: #f4efe2;
+      background: linear-gradient(145deg, #173126, #0c1c16);
+      border: 1px solid rgba(217, 183, 95, .62);
+      border-radius: 12px;
+      box-shadow: 0 20px 55px rgba(0, 0, 0, .55);
+    }
+    .update-banner[hidden] { display: none; }
+    .update-banner-copy strong { display: block; font-size: 13px; }
+    .update-banner-copy span { display: block; margin-top: 2px; color: #aeb9b3; font-size: 11px; }
+    .update-banner-actions { display: flex; gap: 7px; }
+    .update-banner button { min-height: 38px; margin: 0; padding: 7px 10px; font-size: 11px; }
+    .update-dismiss { color: #c4ccc8; background: transparent; border-color: #52615a; }
 
     /* PRIMARY LOOP — START: one clear job for each destination. */
     .tab-intro {
@@ -3208,6 +3246,16 @@
       .more-item-content { padding: 16px 13px 18px; }
       .more-item-copy small { font-size: 11px; }
       .more-done-row button { width: 100%; }
+      .build-info { margin-top: -6px; padding: 0 3px; }
+      .update-banner {
+        right: 8px;
+        bottom: calc(72px + env(safe-area-inset-bottom));
+        width: calc(100% - 16px);
+        padding: 12px;
+        border-radius: 10px;
+      }
+      .update-banner-actions { flex-direction: column; }
+      .update-banner button { min-height: 34px; }
       .tab-intro { margin-bottom: 15px; }
       #homePanel > .tab-intro { padding: 2px 3px 0; }
       .tab-intro h2 { font-size: 28px; }
@@ -3389,6 +3437,7 @@
         </details>
       </div>
     </section>
+    <p class="build-info">Build <code id="buildVersionLabel">—</code></p>
   </div>
 
   <section id="homePanel" class="dashboard-snapshot" aria-label="League snapshot">
@@ -3541,6 +3590,17 @@
 
 </div>
 
+<aside id="updateBanner" class="update-banner" role="status" aria-live="polite" hidden>
+  <div class="update-banner-copy">
+    <strong>A newer version of The Fed is available.</strong>
+    <span>Your saved league data will stay on this device.</span>
+  </div>
+  <div class="update-banner-actions">
+    <button id="applyUpdateButton" type="button">Update now</button>
+    <button id="dismissUpdateButton" class="update-dismiss" type="button" aria-label="Dismiss update notice">Later</button>
+  </div>
+</aside>
+
 <!-- MOBILE TAB SHELL — START: existing destinations only; no application logic. -->
 <nav class="mobile-tabbar" aria-label="Primary sections">
   <a href="#homePanel"><span class="tab-icon" aria-hidden="true">⌂</span><span>Home</span></a>
@@ -3605,6 +3665,7 @@
 <script>
   const STORAGE_KEY = "fedData";
   const SCHEMA_VERSION = 4;
+  const BUILD_VERSION = document.querySelector('meta[name="build-version"]')?.content || "unknown";
 
   function createId(prefix) {
     if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
@@ -6197,11 +6258,82 @@
     syncMobileTabState();
   }
 
+  function hasUnsavedGameWork() {
+    const gameName = document.getElementById("gameName")?.value.trim();
+    const gameNotes = document.getElementById("gameNotes")?.value.trim();
+    const hasParticipants = Boolean(document.querySelector(".participant:checked"));
+    return Boolean(
+      editingGameId || gameName || gameNotes || hasParticipants ||
+      pendingGamePhotos.length || photoProcessing
+    );
+  }
+
+  function showUpdateAvailable(remoteVersion) {
+    try {
+      if (sessionStorage.getItem("fedDismissedBuild") === remoteVersion) return;
+    } catch (error) {
+      // A blocked session store should never prevent the update notice.
+    }
+
+    const banner = document.getElementById("updateBanner");
+    banner.dataset.version = remoteVersion;
+    banner.hidden = false;
+  }
+
+  function applyAvailableUpdate() {
+    const banner = document.getElementById("updateBanner");
+    const remoteVersion = banner.dataset.version;
+    if (!remoteVersion) return;
+
+    if (hasUnsavedGameWork() && !confirm(
+      "You have an unfinished game submission. Updating now will clear the form, but your saved league data will remain safe.\n\nUpdate anyway?"
+    )) return;
+
+    const updateUrl = new URL(window.location.href);
+    updateUrl.searchParams.delete("fed-check");
+    updateUrl.searchParams.set("build", remoteVersion);
+    window.location.assign(updateUrl.href);
+  }
+
+  async function checkForFedUpdate() {
+    if (window.location.protocol !== "http:" && window.location.protocol !== "https:") return;
+
+    try {
+      const checkUrl = new URL("index.html", window.location.href);
+      checkUrl.searchParams.set("fed-check", Date.now().toString());
+      checkUrl.hash = "";
+      const response = await fetch(checkUrl.href, {
+        cache: "no-store",
+        credentials: "same-origin"
+      });
+      if (!response.ok) return;
+
+      const remoteDocument = new DOMParser().parseFromString(await response.text(), "text/html");
+      const remoteVersion = remoteDocument.querySelector('meta[name="build-version"]')?.content;
+      if (remoteVersion && remoteVersion !== BUILD_VERSION) showUpdateAvailable(remoteVersion);
+    } catch (error) {
+      // Offline use and temporary network failures remain silent by design.
+    }
+  }
+
+  document.getElementById("buildVersionLabel").textContent = BUILD_VERSION;
+  document.getElementById("applyUpdateButton").addEventListener("click", applyAvailableUpdate);
+  document.getElementById("dismissUpdateButton").addEventListener("click", () => {
+    const banner = document.getElementById("updateBanner");
+    try {
+      if (banner.dataset.version) sessionStorage.setItem("fedDismissedBuild", banner.dataset.version);
+    } catch (error) {
+      // Dismissal still works for this page even if session storage is blocked.
+    }
+    banner.hidden = true;
+  });
+
   // Persist only the validated, normalized state. Legacy keys remain untouched
   // so an older installation is still recoverable if migration is interrupted.
   saveData();
   window.addEventListener("hashchange", syncMobileTabState);
   render();
+  window.setTimeout(checkForFedUpdate, 1200);
 </script>
 
 </body>
