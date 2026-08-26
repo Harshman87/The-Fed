@@ -137,7 +137,7 @@
 
     .dashboard-snapshot {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--space-sm);
       margin-bottom: var(--space-lg);
     }
@@ -2679,23 +2679,16 @@
       #standingsPanel:target,
       #historyPanel:target { animation: mobile-tab-enter .18s ease-out; }
 
-      body { padding-bottom: calc(118px + env(safe-area-inset-bottom)); }
+      body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 
       .persistent-fed-wire {
-        position: fixed;
-        right: auto;
-        bottom: calc(66px + env(safe-area-inset-bottom));
-        left: 50%;
-        z-index: 89;
+        position: static;
         display: grid;
-        width: min(100%, 540px);
+        width: 100%;
         min-height: 42px;
         margin: 0;
-        border-right: 1px solid #29415a;
-        border-left: 1px solid #29415a;
-        border-radius: 0;
-        box-shadow: 0 -8px 22px rgba(0, 0, 0, .28);
-        transform: translateX(-50%);
+        border-radius: 8px;
+        transform: none;
       }
     }
 
@@ -3162,6 +3155,44 @@
     .more-done-row { display: flex; justify-content: flex-end; margin-top: 14px; }
     .more-done-row button { margin: 0; }
 
+    /* PRIMARY LOOP — START: one clear job for each destination. */
+    .tab-intro {
+      min-width: 0;
+      margin-bottom: 20px;
+    }
+    #homePanel > .tab-intro { grid-column: 1 / -1; margin-bottom: 2px; }
+    .tab-intro-kicker {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .tab-intro h2 { margin: 0 0 6px; }
+    .tab-intro p {
+      max-width: 650px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .loop-promise {
+      display: flex;
+      margin-top: 10px;
+      align-items: center;
+      gap: 7px;
+      color: #cfc6ad;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .03em;
+    }
+    .loop-promise span[aria-hidden="true"] { color: var(--gold); }
+    .snapshot-item.snapshot-secondary { display: none; }
+    #gameFormCard .form-title-line { margin-bottom: 6px; }
+    #gameFormCard > .tab-intro { margin-bottom: 19px; }
+
     @media (max-width: 600px) {
       .more-page { gap: 22px; }
       .more-page-header { padding-inline: 3px; }
@@ -3177,8 +3208,13 @@
       .more-item-content { padding: 16px 13px 18px; }
       .more-item-copy small { font-size: 11px; }
       .more-done-row button { width: 100%; }
+      .tab-intro { margin-bottom: 15px; }
+      #homePanel > .tab-intro { padding: 2px 3px 0; }
+      .tab-intro h2 { font-size: 28px; }
+      .loop-promise { align-items: flex-start; line-height: 1.4; }
     }
     /* MORE PAGE — END */
+    /* PRIMARY LOOP — END */
 
     .achievements-grid {
       display: grid;
@@ -3290,8 +3326,9 @@
 
   <div id="setupPanel" class="more-page">
     <header class="more-page-header">
+      <span class="tab-intro-kicker">More · League administration</span>
       <h2>More</h2>
-      <p class="section-note">Manage the league, protect its records, and explore Commission features.</p>
+      <p class="section-note">Manage the league, protect its records, and explore optional features outside the game-night flow.</p>
     </header>
 
     <section class="more-section" aria-labelledby="leagueManagementTitle">
@@ -3355,9 +3392,11 @@
   </div>
 
   <section id="homePanel" class="dashboard-snapshot" aria-label="League snapshot">
-    <div class="snapshot-item">
-      <span class="snapshot-label">Leader</span>
-      <strong id="snapshotLeader" class="snapshot-value">Pending</strong>
+    <div class="tab-intro">
+      <span class="tab-intro-kicker">Home · The report out</span>
+      <h2>League Briefing</h2>
+      <p>See what the latest game night changed: the current leader, newest ruling, and league pulse.</p>
+      <div class="loop-promise"><span aria-hidden="true">Game night in →</span> Fed report out → memories over time</div>
     </div>
     <div class="snapshot-item">
       <span class="snapshot-label">Active Players</span>
@@ -3367,10 +3406,8 @@
       <span class="snapshot-label">Games Filed</span>
       <strong id="snapshotGames" class="snapshot-value">0</strong>
     </div>
-    <div class="snapshot-item">
-      <span class="snapshot-label">Latest Game</span>
-      <strong id="snapshotLatest" class="snapshot-value">None yet</strong>
-    </div>
+    <span id="snapshotLeader" class="snapshot-secondary" hidden>Pending</span>
+    <span id="snapshotLatest" class="snapshot-secondary" hidden>None yet</span>
 
     <!-- HOME TAB REDESIGN — START: read-only presentation of existing league data. -->
     <div class="home-dashboard">
@@ -3392,6 +3429,11 @@
         </div>
         <div id="homeLatestRuling"></div>
       </section>
+
+      <section class="fed-wire persistent-fed-wire" aria-labelledby="fedWireLabel" tabindex="0">
+        <span class="fed-wire-label" id="fedWireLabel">Fed Wire</span>
+        <div class="fed-wire-window"><div id="fedWireTrack" class="fed-wire-track"></div></div>
+      </section>
     </div>
     <!-- HOME TAB REDESIGN — END -->
   </section>
@@ -3403,6 +3445,10 @@
         <button class="info-tip-button" type="button" aria-label="About submitting a game" aria-describedby="gameFormNote">i</button>
         <span id="gameFormNote" class="info-tip-content" role="tooltip">File complete game for immediate review and binding judgment.</span>
       </span>
+    </div>
+    <div class="tab-intro">
+      <span class="tab-intro-kicker">Submit · Game night in</span>
+      <p>Record who played and how they finished. The Fed scores the result and issues the report.</p>
     </div>
 
     <div class="form-step">
@@ -3454,8 +3500,11 @@
   </div>
 
   <div id="standingsPanel" class="card">
-    <h2>Standings</h2>
-    <p class="section-note">Official rankings, pending any future regulatory intervention.</p>
+    <div class="tab-intro">
+      <span class="tab-intro-kicker">Standings · What changed</span>
+      <h2>Standings</h2>
+      <p>Track the cumulative consequence of every filed game: rank, points, wins, and participation.</p>
+    </div>
     <p class="table-scroll-hint" aria-hidden="true">Swipe to view all columns →</p>
 
     <div class="table-wrap">
@@ -3476,8 +3525,11 @@
   </div>
 
   <div id="historyPanel" class="card">
-    <h2>Memories</h2>
-    <p class="section-note">Game nights, photos, results, and Fed rulings—preserved for future disputes and better stories.</p>
+    <div class="tab-intro">
+      <span class="tab-intro-kicker">Memories · The record over time</span>
+      <h2>Memories</h2>
+      <p>Revisit every game night as a timeline of results, photos, context, and official Fed rulings.</p>
+    </div>
     <div id="undoNotice" class="undo-notice" role="status" aria-live="polite" hidden>
       <span id="undoMessage"></span>
       <button type="button" onclick="undoDelete()">Undo</button>
@@ -3488,15 +3540,6 @@
   </div>
 
 </div>
-
-<!-- PERSISTENT FED WIRE — START: one existing-data ticker across mobile tabs. -->
-<section class="fed-wire persistent-fed-wire" aria-labelledby="fedWireLabel" tabindex="0">
-  <span class="fed-wire-label" id="fedWireLabel">Fed Wire</span>
-  <div class="fed-wire-window">
-    <div id="fedWireTrack" class="fed-wire-track"></div>
-  </div>
-</section>
-<!-- PERSISTENT FED WIRE — END -->
 
 <!-- MOBILE TAB SHELL — START: existing destinations only; no application logic. -->
 <nav class="mobile-tabbar" aria-label="Primary sections">
