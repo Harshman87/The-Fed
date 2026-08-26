@@ -3120,6 +3120,129 @@
 
       button:hover { transform: none; }
     }
+
+    /* AUDIT REFINEMENTS + ACHIEVEMENTS — START */
+    .form-step-heading,
+    .form-step-title-line { position: relative; z-index: 1; }
+
+    .step-number {
+      position: relative;
+      z-index: 2;
+      flex: 0 0 auto;
+    }
+
+    .home-ruling-card { overflow: hidden; }
+
+    .home-ruling-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 13px;
+    }
+
+    .home-ruling-card .history-heading { flex: 1; min-width: 0; }
+
+    .table-scroll-hint {
+      display: none;
+      margin: 8px 0 -7px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .06em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .achievements-groups { display: grid; gap: 22px; margin-top: 18px; }
+
+    .achievements-group h3 { margin: 0 0 10px; }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+      gap: 10px;
+    }
+
+    .achievement-card {
+      width: 100%;
+      min-height: 112px;
+      margin: 0;
+      grid-template-columns: 42px minmax(0, 1fr);
+      color: inherit;
+      text-align: left;
+    }
+
+    .achievement-card:hover { background: rgba(217, 183, 95, .12); }
+
+    .achievement-card.locked {
+      filter: grayscale(1);
+      opacity: .58;
+      background: #101311;
+      border-color: #3a3d3a;
+    }
+
+    .achievement-card.secret {
+      filter: grayscale(1);
+      background: #0b0e0d;
+      border-style: dashed;
+      border-color: #454945;
+    }
+
+    .achievement-card.secret .badge-icon { font-size: 23px; }
+
+    .achievement-card .achievement-hint {
+      grid-column: 2;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    #achievementDetailDialog { position: relative; }
+
+    .achievement-detail-list {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0 0;
+    }
+
+    .achievement-detail-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 13px;
+    }
+
+    .achievement-detail-row span:first-child {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .form-step + .form-step { border-top-color: transparent; }
+
+      .form-step + .form-step::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 34px;
+        height: 1px;
+        background: #29312d;
+      }
+
+      .table-scroll-hint { display: block; }
+
+      .achievements-grid { grid-template-columns: 1fr; }
+
+      .home-ruling-summary { align-items: flex-start; }
+    }
+    /* AUDIT REFINEMENTS + ACHIEVEMENTS — END */
   </style>
 </head>
 
@@ -3171,6 +3294,12 @@
       </div>
       <input id="backupFile" type="file" accept="application/json,.json" hidden onchange="importBackup(event)">
       <p id="backupStatus" class="backup-status" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="card" id="achievementsPanel">
+      <h2>Achievements</h2>
+      <p class="section-note">The complete Commission commendation ledger. Select a badge to inspect its record.</p>
+      <div id="achievementsGallery" class="achievements-groups"></div>
     </div>
   </div>
 
@@ -3276,6 +3405,7 @@
   <div id="standingsPanel" class="card">
     <h2>Standings</h2>
     <p class="section-note">Official rankings, pending any future regulatory intervention.</p>
+    <p class="table-scroll-hint" aria-hidden="true">Swipe to view all columns →</p>
 
     <div class="table-wrap">
     <table>
@@ -3364,6 +3494,16 @@
     <img id="memoryLightboxImage" alt="">
     <button id="memoryLightboxNext" class="memory-lightbox-nav memory-lightbox-next" type="button" aria-label="Next photo" onclick="moveMemoryLightbox(1)">›</button>
     <p id="memoryLightboxCaption"></p>
+  </section>
+</div>
+
+<div id="achievementDetailBackdrop" class="modal-backdrop" hidden>
+  <section id="achievementDetailDialog" class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="achievementDetailTitle">
+    <button id="achievementDetailClose" class="modal-close" type="button" aria-label="Close achievement details" onclick="closeAchievementDetail()">×</button>
+    <p class="modal-kicker">Commission Commendation</p>
+    <h2 id="achievementDetailTitle"></h2>
+    <p id="achievementDetailDescription"></p>
+    <div id="achievementDetailList" class="achievement-detail-list"></div>
   </section>
 </div>
 <!-- MEMORY INTERACTION FIXES — END -->
@@ -3566,6 +3706,8 @@
   let memoryLightboxGameId = null;
   let memoryLightboxIndex = 0;
   let memoryDialogReturnFocus = null;
+  let achievementCatalog = [];
+  let achievementDialogReturnFocus = null;
 
   function saveData() {
     recalculateStandings(state);
@@ -4667,6 +4809,14 @@
       badges.push({ icon: "$", name: "Points Printer", description: "Expanded the personal points supply beyond twenty-five." });
     }
 
+    if (getSecretEarners("sweep").some(entry => entry.player.id === player.id)) {
+      badges.push({ icon: "✦", name: "Full Table Mandate", description: "Won a sanctioned proceeding involving at least four players." });
+    }
+
+    if (getSecretEarners("appeal").some(entry => entry.player.id === player.id)) {
+      badges.push({ icon: "↟", name: "Appeal Granted", description: "Returned from a non-winning finish to win the next proceeding attended." });
+    }
+
     if (rank === 1 && player.games > 0) {
       badges.push({ icon: "♛", name: "Acting Chair", description: "Currently occupies the highest office in the standings.", dynamic: true });
     }
@@ -4674,6 +4824,263 @@
     getGameLeaderTitles(player.id).forEach(title => badges.push(title));
 
     return badges;
+  }
+
+  function getChronologicalGames() {
+    return games
+      .map((gameRecord, index) => ({ gameRecord, index }))
+      .sort((a, b) => {
+        const aTime = Date.parse(a.gameRecord.recordedAt || "");
+        const bTime = Date.parse(b.gameRecord.recordedAt || "");
+        if (Number.isFinite(aTime) && Number.isFinite(bTime) && aTime !== bTime) return aTime - bTime;
+        if (Number.isFinite(aTime) !== Number.isFinite(bTime)) return Number.isFinite(aTime) ? -1 : 1;
+        return b.index - a.index;
+      })
+      .map(entry => entry.gameRecord);
+  }
+
+  function achievementDateLabel(recordedAt) {
+    return recordedAt ? formatGameDate(recordedAt) : "Date not recorded";
+  }
+
+  function getMilestoneEarners(test) {
+    const progress = new Map(players.map(player => [player.id, { points: 0, wins: 0, games: 0 }]));
+    const unlocked = new Map();
+
+    getChronologicalGames().forEach(gameRecord => {
+      gameRecord.results.forEach(result => {
+        const playerProgress = progress.get(result.playerId);
+        if (!playerProgress || unlocked.has(result.playerId)) return;
+        playerProgress.points += Number(result.points) || 0;
+        playerProgress.games += 1;
+        if (Number(result.place) === 1) playerProgress.wins += 1;
+        if (test(playerProgress)) unlocked.set(result.playerId, gameRecord.recordedAt || "");
+      });
+    });
+
+    return [...unlocked].map(([playerId, recordedAt]) => ({
+      player: players.find(player => player.id === playerId),
+      recordedAt
+    })).filter(entry => entry.player);
+  }
+
+  function getSecretEarners(kind) {
+    const unlocked = new Map();
+    const previousPlaces = new Map();
+
+    getChronologicalGames().forEach(gameRecord => {
+      gameRecord.results.forEach(result => {
+        if (unlocked.has(result.playerId)) return;
+        const won = Number(result.place) === 1;
+        if (kind === "sweep" && won && gameRecord.results.length >= 4) {
+          unlocked.set(result.playerId, gameRecord.recordedAt || "");
+        }
+        if (kind === "appeal" && won && Number(previousPlaces.get(result.playerId)) > 1) {
+          unlocked.set(result.playerId, gameRecord.recordedAt || "");
+        }
+      });
+      gameRecord.results.forEach(result => previousPlaces.set(result.playerId, Number(result.place)));
+    });
+
+    return [...unlocked].map(([playerId, recordedAt]) => ({
+      player: players.find(player => player.id === playerId),
+      recordedAt
+    })).filter(entry => entry.player);
+  }
+
+  function getCurrentTitleDate(playerId, gameTitle) {
+    const totals = new Map();
+    let currentLeaderId = null;
+    let acquiredAt = "";
+    const matchingGames = getChronologicalGames().filter(gameRecord =>
+      !gameTitle || gameRecord.game.trim().toLocaleLowerCase() === gameTitle.trim().toLocaleLowerCase()
+    );
+
+    matchingGames.forEach(gameRecord => {
+      gameRecord.results.forEach(result => {
+        const total = totals.get(result.playerId) || {
+          id: result.playerId,
+          name: result.name,
+          points: 0,
+          wins: 0,
+          games: 0
+        };
+        total.points += Number(result.points) || 0;
+        total.wins += Number(result.place) === 1 ? 1 : 0;
+        total.games += 1;
+        totals.set(result.playerId, total);
+      });
+      const leader = [...totals.values()].sort((a, b) =>
+        b.points - a.points || b.wins - a.wins ||
+        (gameTitle ? b.games - a.games : 0) || a.name.localeCompare(b.name)
+      )[0];
+      if (leader && leader.id !== currentLeaderId) {
+        currentLeaderId = leader.id;
+        if (leader.id === playerId) acquiredAt = gameRecord.recordedAt || "";
+      }
+    });
+
+    return acquiredAt;
+  }
+
+  function buildAchievementCatalog(sortedPlayers) {
+    const definitions = [
+      { icon: "★", name: "First Authorization", description: "Recorded an officially sanctioned victory.", rarity: "Common", hint: "Win one sanctioned game.", test: stats => stats.wins >= 1 },
+      { icon: "⚖", name: "Repeat Offender", description: "Accumulated three or more wins under Commission supervision.", rarity: "Uncommon", hint: "Record three sanctioned victories.", test: stats => stats.wins >= 3 },
+      { icon: "◆", name: "Regular Witness", description: "Appeared in five sanctioned proceedings.", rarity: "Common", hint: "Participate in five games.", test: stats => stats.games >= 5 },
+      { icon: "▣", name: "Career Bureaucrat", description: "Survived ten games and all associated paperwork.", rarity: "Rare", hint: "Participate in ten games.", test: stats => stats.games >= 10 },
+      { icon: "$", name: "Points Printer", description: "Expanded the personal points supply beyond twenty-five.", rarity: "Rare", hint: "Accumulate at least 25 points.", test: stats => stats.points >= 25 }
+    ];
+
+    const catalog = definitions.map(definition => ({
+      ...definition,
+      secret: false,
+      earners: getMilestoneEarners(definition.test)
+    }));
+
+    const leader = games.length ? sortedPlayers[0] : null;
+    if (leader) {
+      catalog.push({
+        icon: "♛",
+        name: "Acting Chair",
+        description: "Currently occupies the highest office in the standings.",
+        rarity: "Current title",
+        hint: "Reach first place in the standings.",
+        secret: false,
+        dynamic: true,
+        earners: [{ player: leader, recordedAt: getCurrentTitleDate(leader.id, "") }]
+      });
+    } else {
+      catalog.push({ icon: "♛", name: "Acting Chair", description: "Currently occupies the highest office in the standings.", rarity: "Current title", hint: "Reach first place in the standings.", secret: false, dynamic: true, earners: [] });
+    }
+
+    const gameTitleMap = new Map();
+    games.forEach(gameRecord => {
+      const title = gameRecord.game.trim();
+      if (title && !gameTitleMap.has(title.toLocaleLowerCase())) gameTitleMap.set(title.toLocaleLowerCase(), title);
+    });
+    const gameTitles = [...gameTitleMap.values()].sort((a, b) => a.localeCompare(b));
+    gameTitles.forEach(gameTitle => {
+      const holder = players.find(player => getGameLeaderTitles(player.id).some(title =>
+        title.game.toLocaleLowerCase() === gameTitle.toLocaleLowerCase()
+      ));
+      catalog.push({
+        icon: getGameMark(gameTitle),
+        name: "Top " + gameTitle + " Player",
+        description: "Currently leads the Commission's all-time " + gameTitle + " results.",
+        rarity: "Game title",
+        hint: "Lead the all-time results for " + gameTitle + ".",
+        secret: false,
+        dynamic: true,
+        game: gameTitle,
+        earners: holder ? [{ player: holder, recordedAt: getCurrentTitleDate(holder.id, gameTitle) }] : []
+      });
+    });
+
+    [
+      { icon: "✦", name: "Full Table Mandate", description: "Won a sanctioned proceeding involving at least four players.", rarity: "Rare", hint: "Requirements remain classified.", kind: "sweep" },
+      { icon: "↟", name: "Appeal Granted", description: "Returned from a non-winning finish to win the next proceeding attended.", rarity: "Rare", hint: "Requirements remain classified.", kind: "appeal" }
+    ].forEach(definition => catalog.push({
+      ...definition,
+      secret: true,
+      earners: getSecretEarners(definition.kind)
+    }));
+
+    return catalog;
+  }
+
+  function renderAchievements(sortedPlayers) {
+    achievementCatalog = buildAchievementCatalog(sortedPlayers);
+    const gallery = document.getElementById("achievementsGallery");
+    gallery.innerHTML = "";
+    const groups = [
+      { title: "Unlocked", items: achievementCatalog.filter(item => item.earners.length) },
+      { title: "Locked", items: achievementCatalog.filter(item => !item.secret && !item.earners.length) },
+      { title: "Secret", items: achievementCatalog.filter(item => item.secret && !item.earners.length) }
+    ];
+
+    groups.forEach(group => {
+      const section = document.createElement("section");
+      section.className = "achievements-group";
+      const heading = document.createElement("h3");
+      heading.textContent = group.title + " · " + group.items.length;
+      section.appendChild(heading);
+      const grid = document.createElement("div");
+      grid.className = "achievements-grid";
+
+      group.items.forEach(item => {
+        const index = achievementCatalog.indexOf(item);
+        const hiddenSecret = item.secret && !item.earners.length;
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "badge-card achievement-card" + (!item.earners.length ? " locked" : "") + (hiddenSecret ? " secret" : "");
+        if (item.game) applyGameTheme(card, item.game);
+        card.setAttribute("aria-label", hiddenSecret ? "View secret achievement hint" : "View " + item.name + " achievement details");
+        card.addEventListener("click", () => openAchievementDetail(index, card));
+        const icon = document.createElement("span");
+        icon.className = "badge-icon" + (item.game ? " game-mark" : "");
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = hiddenSecret ? "?" : item.icon;
+        const name = document.createElement("strong");
+        name.textContent = hiddenSecret ? "Classified Achievement" : item.name;
+        const hint = document.createElement("span");
+        hint.className = "achievement-hint";
+        hint.textContent = item.earners.length
+          ? item.earners.map(entry => entry.player.name).join(", ")
+          : item.hint;
+        card.appendChild(icon);
+        card.appendChild(name);
+        card.appendChild(hint);
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+      gallery.appendChild(section);
+    });
+  }
+
+  function openAchievementDetail(index, trigger) {
+    const achievement = achievementCatalog[index];
+    if (!achievement) return;
+    const hiddenSecret = achievement.secret && !achievement.earners.length;
+    achievementDialogReturnFocus = trigger || document.activeElement;
+    document.getElementById("achievementDetailTitle").textContent = hiddenSecret ? "Classified Achievement" : achievement.name;
+    document.getElementById("achievementDetailDescription").textContent = hiddenSecret
+      ? "This commendation remains sealed until its requirements are satisfied."
+      : achievement.description;
+    const list = document.getElementById("achievementDetailList");
+    list.innerHTML = "";
+    const rows = [
+      ["Status", achievement.earners.length ? "Unlocked" : hiddenSecret ? "Secret" : "Locked"],
+      ["Rarity", hiddenSecret ? "Classified" : achievement.rarity],
+      [achievement.earners.length ? "Earned by" : "Hint", achievement.earners.length ? achievement.earners.map(entry => entry.player.name).join(", ") : achievement.hint]
+    ];
+    if (achievement.earners.length) {
+      rows.push(["Unlocked", achievement.earners.map(entry => entry.player.name + " — " + achievementDateLabel(entry.recordedAt)).join(" · ")]);
+    }
+    rows.forEach(([label, value]) => {
+      const row = document.createElement("div");
+      row.className = "achievement-detail-row";
+      const key = document.createElement("span");
+      key.textContent = label;
+      const detail = document.createElement("span");
+      detail.textContent = value;
+      row.appendChild(key);
+      row.appendChild(detail);
+      list.appendChild(row);
+    });
+    document.getElementById("achievementDetailBackdrop").hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("achievementDetailClose").focus();
+  }
+
+  function closeAchievementDetail() {
+    const backdrop = document.getElementById("achievementDetailBackdrop");
+    if (backdrop.hidden) return;
+    backdrop.hidden = true;
+    document.body.style.overflow = "";
+    if (achievementDialogReturnFocus && document.contains(achievementDialogReturnFocus)) achievementDialogReturnFocus.focus();
+    achievementDialogReturnFocus = null;
   }
 
   function getGameLeaderTitles(playerId) {
@@ -4876,15 +5283,51 @@
   document.getElementById("memoryLightboxBackdrop").addEventListener("click", event => {
     if (event.target.id === "memoryLightboxBackdrop") closeMemoryLightbox();
   });
+  document.getElementById("achievementDetailBackdrop").addEventListener("click", event => {
+    if (event.target.id === "achievementDetailBackdrop") closeAchievementDetail();
+  });
+
+  function keepFocusInside(event, container) {
+    if (event.key !== "Tab" || !container) return;
+    const focusable = Array.from(container.querySelectorAll(
+      'button:not([disabled]):not([hidden]), [href], input:not([disabled]):not([hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter(element => element.offsetParent !== null);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   document.addEventListener("keydown", event => {
-    if (!document.getElementById("memoryLightboxBackdrop").hidden) {
+    const achievementBackdrop = document.getElementById("achievementDetailBackdrop");
+    const lightboxBackdrop = document.getElementById("memoryLightboxBackdrop");
+    const deleteBackdrop = document.getElementById("deleteConfirmBackdrop");
+    const playerBackdrop = document.getElementById("playerModalBackdrop");
+    if (!achievementBackdrop.hidden) {
+      if (event.key === "Escape") closeAchievementDetail();
+      keepFocusInside(event, document.getElementById("achievementDetailDialog"));
+      return;
+    }
+    if (!lightboxBackdrop.hidden) {
       if (event.key === "Escape") closeMemoryLightbox();
       if (event.key === "ArrowLeft") moveMemoryLightbox(-1);
       if (event.key === "ArrowRight") moveMemoryLightbox(1);
+      keepFocusInside(event, lightboxBackdrop.querySelector(".memory-lightbox"));
       return;
     }
-    if (event.key === "Escape" && !document.getElementById("deleteConfirmBackdrop").hidden) {
-      closeDeleteConfirmation();
+    if (!deleteBackdrop.hidden) {
+      if (event.key === "Escape") closeDeleteConfirmation();
+      keepFocusInside(event, deleteBackdrop.querySelector(".confirm-dialog"));
+      return;
+    }
+    if (!playerBackdrop.hidden) {
+      keepFocusInside(event, document.getElementById("playerModal"));
     }
   });
 
@@ -4947,6 +5390,7 @@
     const leaderBadges = document.getElementById("homeLeaderBadges");
 
     leaderName.textContent = leader ? leader.name : "Pending appointment";
+    leaderName.title = leader ? leader.name : "";
     leaderStats.textContent = leader
       ? leader.points + " points · " + leader.wins + " win" + (leader.wins === 1 ? "" : "s") +
         " · " + leader.games + " game" + (leader.games === 1 ? "" : "s")
@@ -5001,10 +5445,29 @@
     const newestHistoryEntry = document.querySelector("#rulings .history-entry:not(.legacy-entry)");
 
     if (newestHistoryEntry) {
-      const homeEntry = newestHistoryEntry.cloneNode(true);
-      homeEntry.open = true;
-      homeEntry.querySelector(".history-actions")?.remove();
-      homeEntry.querySelector(".history-order")?.remove();
+      const latestGame = games[0];
+      const homeEntry = document.createElement("article");
+      homeEntry.className = "ruling history-entry home-ruling-card";
+      const sourceSummary = newestHistoryEntry.querySelector("summary");
+      const homeSummary = document.createElement("div");
+      homeSummary.className = "home-ruling-summary";
+      Array.from(sourceSummary.children).forEach(child => homeSummary.appendChild(child.cloneNode(true)));
+      homeSummary.querySelector(".history-chevron")?.remove();
+      const homeCover = homeSummary.querySelector('.memory-cover[role="button"]');
+      if (homeCover && latestGame) {
+        const openCover = event => {
+          event.preventDefault();
+          event.stopPropagation();
+          openMemoryLightbox(latestGame.id, 0, homeCover);
+        };
+        homeCover.addEventListener("click", openCover);
+        homeCover.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") openCover(event);
+        });
+      }
+      homeEntry.appendChild(homeSummary);
+      const homeReview = newestHistoryEntry.querySelector(".fed-review")?.cloneNode(true);
+      if (homeReview) homeEntry.appendChild(homeReview);
       const homeReviewLabel = homeEntry.querySelector(".fed-review-label");
       if (homeReviewLabel) homeReviewLabel.textContent = "Fed Review · Commission Finding";
       latestRuling.appendChild(homeEntry);
@@ -5014,6 +5477,18 @@
       empty.textContent = "The Commission is awaiting its first case.";
       latestRuling.appendChild(empty);
     }
+  }
+
+  function syncMobileTabState() {
+    const links = Array.from(document.querySelectorAll(".mobile-tabbar a"));
+    const requestedHash = window.location.hash || "#homePanel";
+    const currentHash = links.some(link => link.getAttribute("href") === requestedHash)
+      ? requestedHash
+      : "#homePanel";
+    links.forEach(link => {
+      if (link.getAttribute("href") === currentHash) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
   }
   /* HOME TAB REDESIGN — END */
 
@@ -5511,11 +5986,14 @@
 
     renderMemoryPhotoPreview();
     renderHomePresentation(sortedPlayers);
+    renderAchievements(sortedPlayers);
+    syncMobileTabState();
   }
 
   // Persist only the validated, normalized state. Legacy keys remain untouched
   // so an older installation is still recoverable if migration is interrupted.
   saveData();
+  window.addEventListener("hashchange", syncMobileTabState);
   render();
 </script>
 
