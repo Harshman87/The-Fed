@@ -2739,6 +2739,29 @@
       #gameFormCard:target,
       #standingsPanel:target,
       #historyPanel:target { animation: mobile-tab-enter .18s ease-out; }
+
+      body { padding-bottom: calc(118px + env(safe-area-inset-bottom)); }
+
+      .persistent-fed-wire {
+        position: fixed;
+        right: auto;
+        bottom: calc(66px + env(safe-area-inset-bottom));
+        left: 50%;
+        z-index: 89;
+        display: grid;
+        width: min(100%, 540px);
+        min-height: 42px;
+        margin: 0;
+        border-right: 1px solid #29415a;
+        border-left: 1px solid #29415a;
+        border-radius: 0;
+        box-shadow: 0 -8px 22px rgba(0, 0, 0, .28);
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (min-width: 601px) {
+      .persistent-fed-wire { display: none; }
     }
 
     @keyframes mobile-tab-enter {
@@ -2855,6 +2878,129 @@
       border-radius: 8px;
     }
 
+    .memory-photo-open {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      box-shadow: none;
+      cursor: zoom-in;
+    }
+
+    .memory-photo-open::after {
+      content: "＋";
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      display: grid;
+      width: 25px;
+      height: 25px;
+      place-items: center;
+      color: #fff;
+      background: rgba(4, 10, 16, .75);
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 50%;
+      opacity: .78;
+    }
+
+    .memory-cover[role="button"] { cursor: zoom-in; }
+
+    .confirm-dialog {
+      width: min(430px, 100%);
+      padding: 24px;
+      background: linear-gradient(150deg, #10243a, #07131f);
+      border: 1px solid rgba(216, 173, 69, .52);
+      border-radius: 14px;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .6);
+    }
+
+    .confirm-dialog h2 { margin: 5px 0 9px; }
+
+    .confirm-dialog p:not(.modal-kicker) { color: #c8d0d6; line-height: 1.55; }
+
+    .confirm-dialog-actions { display: flex; margin-top: 20px; gap: 10px; }
+
+    .confirm-dialog-actions button { flex: 1; margin: 0; }
+
+    .confirm-delete-button {
+      color: #fff;
+      background: #8e3028;
+      border-color: #c35b50;
+    }
+
+    .memory-lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 130;
+      display: grid;
+      padding: max(18px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+      place-items: center;
+      background: rgba(1, 5, 10, .94);
+      backdrop-filter: blur(10px);
+    }
+
+    .memory-lightbox-backdrop[hidden] { display: none; }
+
+    .memory-lightbox {
+      position: relative;
+      display: grid;
+      width: min(1000px, 100%);
+      height: min(820px, 100%);
+      grid-template-columns: 48px minmax(0, 1fr) 48px;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .memory-lightbox img {
+      grid-column: 2;
+      width: 100%;
+      max-height: calc(100vh - 130px);
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, .6);
+    }
+
+    .memory-lightbox p {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: #d9d6cc;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .memory-lightbox-close,
+    .memory-lightbox-nav {
+      margin: 0;
+      padding: 0;
+      color: #f3e8c9;
+      background: rgba(9, 24, 39, .88);
+      border: 1px solid rgba(216, 173, 69, .52);
+      border-radius: 50%;
+    }
+
+    .memory-lightbox-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 2;
+      width: 42px;
+      min-height: 42px;
+      font-size: 25px;
+    }
+
+    .memory-lightbox-nav { width: 44px; min-height: 44px; font-size: 30px; }
+
+    .memory-lightbox-previous { grid-column: 1; grid-row: 1; }
+
+    .memory-lightbox-next { grid-column: 3; grid-row: 1; }
+
     .memory-photo-remove {
       position: absolute;
       top: 5px;
@@ -2939,6 +3085,15 @@
       .memory-cover { width: 82px; min-width: 82px; }
 
       #homeLatestRuling .memory-cover { width: 72px; min-width: 72px; }
+
+      .confirm-dialog-actions { flex-direction: column-reverse; }
+
+      .memory-lightbox {
+        grid-template-columns: 42px minmax(0, 1fr) 42px;
+        gap: 4px;
+      }
+
+      .memory-lightbox-nav { width: 38px; min-height: 38px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -3050,13 +3205,6 @@
         <div id="homeLeaderBadges" class="home-leader-badges" aria-label="Leader badges"></div>
       </section>
 
-      <section class="fed-wire" aria-labelledby="fedWireLabel" tabindex="0">
-        <span class="fed-wire-label" id="fedWireLabel">Fed Wire</span>
-        <div class="fed-wire-window">
-          <div id="fedWireTrack" class="fed-wire-track"></div>
-        </div>
-      </section>
-
       <section class="home-latest-ruling" aria-labelledby="homeLatestHeading">
         <div class="home-section-heading">
           <span>Official Dispatch</span>
@@ -3160,6 +3308,15 @@
 
 </div>
 
+<!-- PERSISTENT FED WIRE — START: one existing-data ticker across mobile tabs. -->
+<section class="fed-wire persistent-fed-wire" aria-labelledby="fedWireLabel" tabindex="0">
+  <span class="fed-wire-label" id="fedWireLabel">Fed Wire</span>
+  <div class="fed-wire-window">
+    <div id="fedWireTrack" class="fed-wire-track"></div>
+  </div>
+</section>
+<!-- PERSISTENT FED WIRE — END -->
+
 <!-- MOBILE TAB SHELL — START: existing destinations only; no application logic. -->
 <nav class="mobile-tabbar" aria-label="Primary sections">
   <a href="#homePanel"><span class="tab-icon" aria-hidden="true">⌂</span><span>Home</span></a>
@@ -3186,6 +3343,30 @@
     <div id="playerBadges" class="badge-sections"></div>
   </section>
 </div>
+
+<!-- MEMORY INTERACTION FIXES — START -->
+<div id="deleteConfirmBackdrop" class="modal-backdrop" hidden>
+  <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle" aria-describedby="deleteConfirmMessage">
+    <p class="modal-kicker">Memory Administration</p>
+    <h2 id="deleteConfirmTitle">Delete this memory?</h2>
+    <p id="deleteConfirmMessage"></p>
+    <div class="confirm-dialog-actions">
+      <button id="deleteConfirmCancel" type="button" onclick="closeDeleteConfirmation()">Cancel</button>
+      <button class="confirm-delete-button" type="button" onclick="confirmDeleteGame()">Confirm Delete</button>
+    </div>
+  </section>
+</div>
+
+<div id="memoryLightboxBackdrop" class="memory-lightbox-backdrop" hidden>
+  <section class="memory-lightbox" role="dialog" aria-modal="true" aria-labelledby="memoryLightboxCaption">
+    <button id="memoryLightboxClose" class="memory-lightbox-close" type="button" aria-label="Close photo viewer" onclick="closeMemoryLightbox()">×</button>
+    <button id="memoryLightboxPrevious" class="memory-lightbox-nav memory-lightbox-previous" type="button" aria-label="Previous photo" onclick="moveMemoryLightbox(-1)">‹</button>
+    <img id="memoryLightboxImage" alt="">
+    <button id="memoryLightboxNext" class="memory-lightbox-nav memory-lightbox-next" type="button" aria-label="Next photo" onclick="moveMemoryLightbox(1)">›</button>
+    <p id="memoryLightboxCaption"></p>
+  </section>
+</div>
+<!-- MEMORY INTERACTION FIXES — END -->
 
 <script>
   const STORAGE_KEY = "fedData";
@@ -3381,6 +3562,10 @@
   let pendingGamePhotos = [];
   let photoProcessing = false;
   let lastSubmittedGameId = null;
+  let pendingDeleteGameId = null;
+  let memoryLightboxGameId = null;
+  let memoryLightboxIndex = 0;
+  let memoryDialogReturnFocus = null;
 
   function saveData() {
     recalculateStandings(state);
@@ -3824,6 +4009,55 @@
     document.getElementById("gamePhotos").click();
   }
 
+  function renderMemoryLightbox() {
+    const gameRecord = games.find(game => game.id === memoryLightboxGameId);
+    const photos = gameRecord && Array.isArray(gameRecord.photos) ? gameRecord.photos : [];
+    if (!photos.length) {
+      closeMemoryLightbox();
+      return;
+    }
+    memoryLightboxIndex = (memoryLightboxIndex + photos.length) % photos.length;
+    const photo = photos[memoryLightboxIndex];
+    const image = document.getElementById("memoryLightboxImage");
+    image.src = photo.dataUrl;
+    image.alt = "Game night photo " + (memoryLightboxIndex + 1) + " from " + gameRecord.game;
+    document.getElementById("memoryLightboxCaption").textContent =
+      gameRecord.game + " · " + formatGameDate(gameRecord.recordedAt) + " · Photo " +
+      (memoryLightboxIndex + 1) + " of " + photos.length;
+    document.getElementById("memoryLightboxPrevious").hidden = photos.length < 2;
+    document.getElementById("memoryLightboxNext").hidden = photos.length < 2;
+  }
+
+  function openMemoryLightbox(gameId, photoIndex, trigger) {
+    const gameRecord = games.find(game => game.id === gameId);
+    if (!gameRecord || !gameRecord.photos || !gameRecord.photos.length) return;
+    memoryDialogReturnFocus = trigger || document.activeElement;
+    memoryLightboxGameId = gameId;
+    memoryLightboxIndex = photoIndex;
+    document.getElementById("memoryLightboxBackdrop").hidden = false;
+    document.body.style.overflow = "hidden";
+    renderMemoryLightbox();
+    document.getElementById("memoryLightboxClose").focus();
+  }
+
+  function moveMemoryLightbox(direction) {
+    memoryLightboxIndex += direction;
+    renderMemoryLightbox();
+  }
+
+  function closeMemoryLightbox() {
+    const backdrop = document.getElementById("memoryLightboxBackdrop");
+    if (backdrop.hidden) return;
+    backdrop.hidden = true;
+    document.getElementById("memoryLightboxImage").removeAttribute("src");
+    document.body.style.overflow = "";
+    memoryLightboxGameId = null;
+    if (memoryDialogReturnFocus && document.contains(memoryDialogReturnFocus)) {
+      memoryDialogReturnFocus.focus();
+    }
+    memoryDialogReturnFocus = null;
+  }
+
   function clearGameForm() {
     document.getElementById("gameName").value = "";
     document.getElementById("gameNotes").value = "";
@@ -3856,8 +4090,13 @@
       if (selector) selector.value = result.place;
     });
 
-    document.getElementById("gameFormCard").scrollIntoView({ behavior: "smooth", block: "start" });
-    document.getElementById("gameName").focus();
+    if (window.matchMedia("(max-width: 600px)").matches) {
+      window.location.hash = "gameFormCard";
+    }
+    requestAnimationFrame(() => {
+      document.getElementById("gameFormCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("gameName").focus();
+    });
   }
 
   function cancelEdit() {
@@ -3867,14 +4106,41 @@
   }
 
   function deleteGame(gameId) {
+    const gameRecord = games.find(game => game.id === gameId);
+    if (!gameRecord) return;
+    pendingDeleteGameId = gameId;
+    memoryDialogReturnFocus = document.activeElement;
+    document.getElementById("deleteConfirmMessage").textContent =
+      "Delete “" + gameRecord.game + "” from " + formatGameDate(gameRecord.recordedAt) +
+      "? Standings will recalculate immediately, and you will have a short chance to undo.";
+    document.getElementById("deleteConfirmBackdrop").hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("deleteConfirmCancel").focus();
+  }
+
+  function closeDeleteConfirmation() {
+    const backdrop = document.getElementById("deleteConfirmBackdrop");
+    backdrop.hidden = true;
+    pendingDeleteGameId = null;
+    document.body.style.overflow = "";
+    if (memoryDialogReturnFocus && document.contains(memoryDialogReturnFocus)) {
+      memoryDialogReturnFocus.focus();
+    }
+    memoryDialogReturnFocus = null;
+  }
+
+  function confirmDeleteGame() {
+    const gameId = pendingDeleteGameId;
     const index = games.findIndex(game => game.id === gameId);
-    if (index < 0) return;
+    if (index < 0) {
+      closeDeleteConfirmation();
+      return;
+    }
     const gameRecord = games[index];
-    const confirmation = prompt(
-      "Delete “" + gameRecord.game + "” from " + formatGameDate(gameRecord.recordedAt) + "?\n\n" +
-      "This will immediately recalculate all standings.\n\nType DELETE to continue."
-    );
-    if (confirmation !== "DELETE") return;
+    document.getElementById("deleteConfirmBackdrop").hidden = true;
+    pendingDeleteGameId = null;
+    document.body.style.overflow = "";
+    memoryDialogReturnFocus = null;
 
     if (undoTimer) clearTimeout(undoTimer);
     deletedGameUndo = {
@@ -4604,6 +4870,23 @@
       closePlayerModal();
     }
   });
+  document.getElementById("deleteConfirmBackdrop").addEventListener("click", event => {
+    if (event.target.id === "deleteConfirmBackdrop") closeDeleteConfirmation();
+  });
+  document.getElementById("memoryLightboxBackdrop").addEventListener("click", event => {
+    if (event.target.id === "memoryLightboxBackdrop") closeMemoryLightbox();
+  });
+  document.addEventListener("keydown", event => {
+    if (!document.getElementById("memoryLightboxBackdrop").hidden) {
+      if (event.key === "Escape") closeMemoryLightbox();
+      if (event.key === "ArrowLeft") moveMemoryLightbox(-1);
+      if (event.key === "ArrowRight") moveMemoryLightbox(1);
+      return;
+    }
+    if (event.key === "Escape" && !document.getElementById("deleteConfirmBackdrop").hidden) {
+      closeDeleteConfirmation();
+    }
+  });
 
   /* HOME TAB REDESIGN — START
      Read-only presentation helpers. They do not mutate league state. */
@@ -5001,6 +5284,18 @@
           coverImage.src = gameRecord.photos[0].dataUrl;
           coverImage.alt = "Game night memory from " + gameRecord.game;
           cover.appendChild(coverImage);
+          cover.setAttribute("role", "button");
+          cover.tabIndex = 0;
+          cover.setAttribute("aria-label", "Enlarge cover photo from " + gameRecord.game);
+          const openCover = event => {
+            event.preventDefault();
+            event.stopPropagation();
+            openMemoryLightbox(gameRecord.id, 0, cover);
+          };
+          cover.addEventListener("click", openCover);
+          cover.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") openCover(event);
+          });
         } else {
           const placeholder = document.createElement("span");
           placeholder.className = "memory-cover-placeholder";
@@ -5097,10 +5392,19 @@
           const gallery = document.createElement("div");
           gallery.className = "memory-photo-gallery";
           gameRecord.photos.forEach((photo, photoIndex) => {
+            const openButton = document.createElement("button");
+            openButton.type = "button";
+            openButton.className = "memory-photo-open";
+            openButton.setAttribute("aria-label", "Enlarge photo " + (photoIndex + 1) + " from " + gameRecord.game);
             const image = document.createElement("img");
             image.src = photo.dataUrl;
             image.alt = "Game night memory " + (photoIndex + 1) + " from " + gameRecord.game;
-            gallery.appendChild(image);
+            openButton.appendChild(image);
+            openButton.addEventListener("click", event => {
+              event.stopPropagation();
+              openMemoryLightbox(gameRecord.id, photoIndex, openButton);
+            });
+            gallery.appendChild(openButton);
           });
           details.appendChild(gallery);
         }
