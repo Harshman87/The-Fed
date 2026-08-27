@@ -10,7 +10,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- Bump this value with every published revision of the root index.html. -->
-  <meta name="build-version" content="2026.08.26.9">
+  <meta name="build-version" content="2026.08.26.10">
   <title>The Fed</title>
 
   <style>
@@ -5237,6 +5237,32 @@
       ], 4);
     }
 
+    const describePlacement = (group, index) => {
+      const names = listNames(group.map(result => result.name));
+      const place = Number(group[0]?.place || index + 1);
+      const placeLabel = place === 2 ? "second" : place === 3 ? "third" : place + "th";
+      if (group.length > 1) return names + " tied for " + placeLabel;
+      return names + " finished " + placeLabel;
+    };
+    let resultLead;
+    if (groups.length === 1) {
+      resultLead = winner + " jointly claimed victory in " + gameLabel +
+        ", leaving the Commission with a complete roster of winners and no administratively useful loser.";
+    } else if (sharedWin) {
+      const trailingResult = groups.length === 2
+        ? listNames(groups[1].map(result => result.name)) +
+          (groups[1].length > 1 ? " finished tied behind them" : " finished behind them")
+        : groups.slice(1).map(describePlacement).join(", while ");
+      resultLead = winner + " jointly claimed victory in " + gameLabel +
+        ", forcing the Commission to recognize the increasingly troubling concept of cooperation. " +
+        trailingResult + ", ensuring that nobody involved provided the Fed with a clean set of standings.";
+    } else {
+      const trailingResult = groups.slice(1).map(describePlacement).join(", while ");
+      resultLead = winner + " claimed victory in " + gameLabel + ". " +
+        trailingResult.charAt(0).toUpperCase() + trailingResult.slice(1) +
+        ", completing the specific result the Commission will now make unnecessarily official.";
+    }
+
     let noteFinding;
     if (!cleanNote) {
       noteFinding = choose([
@@ -5353,9 +5379,9 @@
     } else if (context.keywords.length) {
       const subjects = context.keywords.slice(0, 2).join(" and ");
       noteFinding = choose([
-        "The " + gameLabel + " field report contains details involving " + subjects + ", translated here into calmer administrative language.",
-        "Supplemental " + gameLabel + " testimony places details involving " + subjects + " near the center of the evening without altering the result.",
-        "Investigators treated the reported details involving " + subjects + " as material " + gameLabel + " context and not as grounds for appeal."
+        "The " + gameLabel + " field report centers on " + subjects + ", a combination the Commission has reviewed extensively and understands no better than when it arrived.",
+        "Supplemental " + gameLabel + " testimony reduces the evening to " + subjects + ", two details now officially preserved despite explaining almost nothing.",
+        "Investigators found " + subjects + " at the center of the submitted " + gameLabel + " account and have declined to pretend the statement became clearer under review."
       ], 1);
     } else {
       noteFinding = choose([
@@ -5473,7 +5499,8 @@
     ];
     const closings = photoCount ? photoClosings : standardClosings;
 
-    return [choose(openings), resultFinding, noteFinding, gameFlavor, choose(closings, 3)].join(" ");
+    const reportBody = cleanNote ? noteFinding : gameFlavor;
+    return [resultLead, reportBody, choose(closings, 3)].join(" ");
   }
 
   function formatGameDate(recordedAt) {
