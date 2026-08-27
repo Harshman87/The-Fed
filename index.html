@@ -10,7 +10,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- Bump this value with every published revision of the root index.html. -->
-  <meta name="build-version" content="2026.08.26.6">
+  <meta name="build-version" content="2026.08.26.9">
   <title>The Fed</title>
 
   <style>
@@ -2802,6 +2802,47 @@
 
     .submit-check { margin-right: 6px; font-size: 16px; }
 
+    .game-logged-banner {
+      position: fixed;
+      top: max(18px, env(safe-area-inset-top));
+      left: 50%;
+      z-index: 145;
+      display: flex;
+      min-width: 190px;
+      padding: 12px 16px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      color: #f1f5f3;
+      background: linear-gradient(145deg, #173d30, #0d291f);
+      border: 1px solid rgba(126, 205, 164, .58);
+      border-radius: 999px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .48);
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: .025em;
+      transform: translateX(-50%);
+      animation: game-logged-in .18s ease-out;
+    }
+    .game-logged-banner[hidden] { display: none; }
+    .game-logged-check {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      color: #092016;
+      background: #8ed3ac;
+      border-radius: 50%;
+      font-size: 15px;
+    }
+    @keyframes game-logged-in {
+      from { opacity: 0; transform: translate(-50%, -7px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .game-logged-banner { animation: none; }
+    }
+
     @keyframes submit-spin { to { transform: rotate(360deg); } }
 
     .memory-photo-controls {
@@ -3242,6 +3283,16 @@
       margin-bottom: 20px;
     }
     #homePanel > .tab-intro { grid-column: 1 / -1; margin-bottom: 2px; }
+    #homePanel > .tab-intro {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    #homePanel > .tab-intro > p,
+    #homePanel > .tab-intro > .loop-promise,
+    #homePanel > .tab-intro .tab-intro-kicker { display: none; }
+    #homePanel > .tab-intro h2 { margin: 0; }
+    #homePanel .home-help-tip { margin-left: auto; }
     .tab-intro-kicker {
       display: block;
       margin-bottom: 5px;
@@ -3275,6 +3326,13 @@
     #gameFormCard > .tab-intro { margin-bottom: 19px; }
 
     @media (max-width: 600px) {
+      body:not(:has(#setupPanel:target, #gameFormCard:target, #standingsPanel:target, #historyPanel:target)) header,
+      body:has(#homePanel:target) header {
+        min-height: 112px;
+        padding-top: calc(15px + env(safe-area-inset-top));
+        padding-bottom: 14px;
+      }
+
       .more-page { gap: 22px; }
       .more-page-header { padding-inline: 3px; }
       .more-page-header h2 { font-size: 30px; }
@@ -3369,9 +3427,76 @@
       .update-banner-actions { flex-direction: column; }
       .update-banner button { min-height: 34px; }
       .tab-intro { margin-bottom: 15px; }
-      #homePanel > .tab-intro { padding: 2px 3px 0; }
+      #homePanel > .tab-intro {
+        display: flex;
+        padding: 0 3px;
+        align-items: center;
+        gap: 8px;
+      }
+      #homePanel > .tab-intro .tab-intro-kicker,
+      #homePanel > .tab-intro > p,
+      #homePanel > .tab-intro > .loop-promise { display: none; }
+      #homePanel > .tab-intro h2 {
+        margin: 0;
+        font-size: 23px;
+      }
+      #homePanel .home-help-tip { margin-left: auto; }
+      #homePanel .home-help-tip .info-tip-button {
+        width: 22px;
+        min-height: 22px;
+        font-size: 12px;
+      }
+      #homePanel .home-help-tip .info-tip-content {
+        right: -2px;
+        left: auto;
+        transform: translateY(-3px);
+      }
+      #homePanel .home-help-tip:hover .info-tip-content,
+      #homePanel .home-help-tip:focus-within .info-tip-content { transform: translateY(0); }
       .tab-intro h2 { font-size: 28px; }
       .loop-promise { align-items: flex-start; line-height: 1.4; }
+
+      .home-dashboard { gap: 6px; }
+      .home-leader-card { padding: 9px 11px; }
+      .home-leader-button {
+        min-height: 39px;
+        margin: 0 0 4px;
+      }
+      .home-leader-identity { gap: 1px; }
+      .home-leader-identity strong { font-size: 21px; }
+      .home-leader-identity span { font-size: 10px; }
+      .home-leader-badges { flex-wrap: nowrap; overflow: hidden; }
+      .home-leader-badge {
+        min-height: 22px;
+        padding: 3px 6px;
+        flex: 0 1 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .home-leader-badge-more { flex: 0 0 auto; }
+      .fed-wire { min-height: 34px; }
+      .home-latest-ruling { padding: 9px 8px 8px; }
+      .home-section-heading { margin: 0 2px 5px; }
+      .home-section-heading h2 { margin-top: 1px; font-size: 20px; }
+      .home-ruling-summary { gap: 8px; padding: 8px 9px; }
+      #homeLatestRuling .memory-cover { width: 52px; min-width: 52px; height: 52px; }
+      #homeLatestRuling .history-meta { font-size: 9px; }
+      #homeLatestRuling .history-heading h3 { font-size: 15px; }
+      #homeLatestRuling .fed-review {
+        max-height: 96px;
+        overflow: hidden;
+        padding: 8px 9px;
+      }
+      #homeLatestRuling .fed-review p {
+        display: -webkit-box;
+        margin-bottom: 0;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        font-size: 11px;
+        line-height: 1.35;
+      }
     }
     /* MORE PAGE — END */
     /* PRIMARY LOOP — END */
@@ -3562,6 +3687,10 @@
       <h2>League Briefing</h2>
       <p>See what the latest game night changed: the current leader, newest ruling, and league pulse.</p>
       <div class="loop-promise"><span aria-hidden="true">Game night in →</span> Fed report out → memories over time</div>
+      <span class="info-tip home-help-tip">
+        <button class="info-tip-button" type="button" aria-label="About the league briefing" aria-describedby="homeHelpText">?</button>
+        <span id="homeHelpText" class="info-tip-content" role="tooltip">See what the latest game night changed: the current leader, newest ruling, and league pulse. Game night in, Fed report out, memories over time.</span>
+      </span>
     </div>
     <div class="snapshot-item">
       <span class="snapshot-label">Active Players</span>
@@ -3704,6 +3833,11 @@
     </div>
   </div>
 
+</div>
+
+<div id="gameLoggedBanner" class="game-logged-banner" role="status" aria-live="assertive" hidden>
+  <span class="game-logged-check" aria-hidden="true">✓</span>
+  <span id="gameLoggedMessage">Game Logged</span>
 </div>
 
 <aside id="updateBanner" class="update-banner" role="status" aria-live="polite" hidden>
@@ -4010,6 +4144,7 @@
   let memoryDialogReturnFocus = null;
   let achievementCatalog = [];
   let achievementDialogReturnFocus = null;
+  let submissionConfirmationTimer = null;
 
   function saveData() {
     recalculateStandings(state);
@@ -4635,6 +4770,7 @@
   async function submitGame() {
     const button = document.getElementById("gameSubmitButton");
     const originalText = button.textContent;
+    const wasEditing = Boolean(editingGameId);
     button.disabled = true;
     button.innerHTML = '<span class="submit-spinner" aria-hidden="true"></span>Submitting…';
     await new Promise(resolve => setTimeout(resolve, 180));
@@ -4647,11 +4783,24 @@
       return;
     }
 
+    const successMessage = wasEditing ? "Ruling Updated" : "Game Logged";
     currentButton.disabled = true;
-    currentButton.innerHTML = '<span class="submit-check" aria-hidden="true">✓</span>Game submitted';
-    await new Promise(resolve => setTimeout(resolve, 650));
+    currentButton.innerHTML = '<span class="submit-check" aria-hidden="true">✓</span>' + successMessage;
+    showSubmissionConfirmation(successMessage);
+    await new Promise(resolve => setTimeout(resolve, 1000));
     currentButton.disabled = false;
     currentButton.textContent = "Submit for Review";
+  }
+
+  function showSubmissionConfirmation(message) {
+    const banner = document.getElementById("gameLoggedBanner");
+    document.getElementById("gameLoggedMessage").textContent = message;
+    banner.hidden = false;
+    if (submissionConfirmationTimer) clearTimeout(submissionConfirmationTimer);
+    submissionConfirmationTimer = setTimeout(() => {
+      banner.hidden = true;
+      submissionConfirmationTimer = null;
+    }, 1600);
   }
 
   function normalizeGameLookupName(value) {
@@ -4864,6 +5013,93 @@
     render();
   }
 
+  function escapeContextPattern(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function contextHasLongPhraseOverlap(source, candidate, phraseLength = 4) {
+    const words = value => String(value).toLocaleLowerCase()
+      .replace(/[^a-z0-9'’-]+/g, " ").trim().split(/\s+/).filter(Boolean);
+    const sourceWords = words(source);
+    const candidateText = " " + words(candidate).join(" ") + " ";
+    if (sourceWords.length < phraseLength) return false;
+    for (let index = 0; index <= sourceWords.length - phraseLength; index++) {
+      const phrase = " " + sourceWords.slice(index, index + phraseLength).join(" ") + " ";
+      if (candidateText.includes(phrase)) return true;
+    }
+    return false;
+  }
+
+  function interpretGameContext(note, game, results) {
+    const text = String(note || "").trim().slice(0, 500);
+    const signal = text.toLocaleLowerCase();
+    const names = results.map(result => result.name).filter(Boolean).sort((a, b) => b.length - a.length);
+    const assignments = {};
+    const roleWords = "was|played|used|picked|chose|selected|ran|as";
+
+    names.forEach(name => {
+      const otherNames = names.filter(other => other !== name).map(escapeContextPattern).join("|");
+      const stopAtAnotherPlayer = otherNames ? "|(?=\\s+(?:and\\s+)?(?:" + otherNames + ")\\s+(?:" + roleWords + ")\\b)" : "";
+      const pattern = new RegExp(
+        "\\b" + escapeContextPattern(name) + "\\b\\s+(?:" + roleWords + ")\\s+(?:as\\s+)?" +
+        "(.{1,42}?)(?=[,.;!?]|$" + stopAtAnotherPlayer + ")", "i"
+      );
+      const match = text.match(pattern);
+      if (!match) return;
+      const assignment = match[1].replace(/\s+/g, " ").replace(/\b(?:all night|that night|this game)\b.*$/i, "")
+        .replace(/\s+and$/i, "").trim().split(" ").slice(0, 5).join(" ");
+      if (assignment && !/^(?:great|awful|terrible|bad|good|first|second|last)$/i.test(assignment)) {
+        assignments[name] = assignment;
+      }
+    });
+
+    const findPlayerNear = pattern => {
+      const signalMatches = [...signal.matchAll(new RegExp(pattern, "gi"))];
+      const candidates = [];
+      names.forEach(name => {
+        const nameMatches = [...signal.matchAll(new RegExp("\\b" + escapeContextPattern(name.toLocaleLowerCase()) + "\\b", "gi"))];
+        nameMatches.forEach(nameMatch => signalMatches.forEach(signalMatch => {
+          const distance = Math.abs(nameMatch.index - signalMatch.index);
+          if (distance <= 60) candidates.push({ name, distance });
+        }));
+      });
+      candidates.sort((left, right) => left.distance - right.distance || names.indexOf(left.name) - names.indexOf(right.name));
+      return candidates[0]?.name || null;
+    };
+
+    const dominantPattern = "took control|take control|dominat(?:ed|ing)?|never let up|ran away|owned|crush(?:ed|ing)?|steamroll(?:ed|ing)?|from (?:the )?start";
+    const strugglePattern = "suck(?:ed|s|ing)?|struggl(?:ed|ing)?|awful|terrible|disaster|never had a chance|could not get|couldn't get|fell apart";
+    const stopWords = new Set((
+      "about after again against all and any are because been before being between both but came can could did does doing down during each few for from further had has have having her here hers herself him himself his how into its itself just more most other our ours ourselves out over own same she should some such than that the their theirs them themselves then there these they this those through too under until very was were what when where which while who whom why will with you your yours yourself yourselves really game night player played turn took control never let up wore said says made makes went goes got gets kept keeps looked felt seemed started finished"
+    ).split(/\s+/));
+    const blockedWords = /^(?:suck|sucked|shit|shitty|fuck|fucking|damn|idiot|stupid|moron|loser)$/i;
+    const identityWords = new Set([game, ...names, ...Object.values(assignments)]
+      .flatMap(value => String(value).toLocaleLowerCase().replace(/[^a-z0-9]+/g, " ").split(/\s+/)));
+    const keywords = [...new Set(signal.replace(/[^a-z0-9'’-]+/g, " ").split(/\s+/)
+      .filter(word => word.length > 3 && !stopWords.has(word) && !identityWords.has(word) && !blockedWords.test(word)))]
+      .slice(0, 3);
+
+    return {
+      text,
+      signal,
+      assignments,
+      dominantPlayer: findPlayerNear(dominantPattern),
+      strugglingPlayer: findPlayerNear(strugglePattern),
+      hasDominance: new RegExp(dominantPattern, "i").test(text),
+      hasStruggle: new RegExp(strugglePattern, "i").test(text),
+      early: /turn one|first turn|opening turn|from (?:the )?start|right away|immediately/.test(signal),
+      comeback: /comeback|came back|behind|turnaround|rally|last turn|final turn/.test(signal),
+      close: /close|tight|narrow|one point|tiebreak|tie break|photo finish/.test(signal),
+      rules: /rule|illegal|mistake|misplay|forgot|wrong|dispute|argument/.test(signal),
+      luck: /luck|lucky|dice|roll|draw|topdeck|random/.test(signal),
+      alliance: /betray|deal|alliance|team|partner|backstab|traitor/.test(signal),
+      newcomer: /first time|new player|learning|teach|tutorial/.test(signal),
+      refreshments: /snack|pizza|beer|drink|food|dessert/.test(signal),
+      mishap: /spill|spilled|drop|dropped|broke|broken|knock|cat|dog|table/.test(signal),
+      keywords
+    };
+  }
+
   function generateCaseReport(game, results, note = "", photoCount = 0, gameKnowledge = null) {
     const groups = [...new Set(results.map(result => result.place))]
       .sort((a, b) => a - b)
@@ -4937,6 +5173,7 @@
     const lastPlace = listNames(last);
     const sharedWin = winners.length > 1;
     const gameLabel = "“" + game + "”";
+    const context = interpretGameContext(cleanNote, game, results);
 
     const openings = sharedWin ? [
       gameLabel + " reached the Commission with multiple claimants and insufficient desk space for all the crowns.",
@@ -5000,89 +5237,136 @@
       ], 4);
     }
 
-    const noteSignal = cleanNote.toLocaleLowerCase();
     let noteFinding;
     if (!cleanNote) {
       noteFinding = choose([
-        "No supplemental testimony was filed, so the board, pieces, and final positions were permitted to speak for themselves.",
-        "The record contains no additional statement from the table, an omission the Commission has chosen to interpret as confidence.",
-        "With no field note attached, investigators relied on the result and a professionally raised eyebrow.",
-        "No contextual filing accompanied the result, sparing the Commission from deciding which details to redact.",
-        "The participants submitted no narrative evidence, a rare display of restraint that will not be rewarded."
+        "No supplemental testimony was filed for " + gameLabel + ", so the final positions were permitted to speak for themselves.",
+        "The " + gameLabel + " record contains no additional statement from the table, an omission the Commission has chosen to interpret as confidence.",
+        "With no field note attached to " + gameLabel + ", investigators relied on the result and a professionally raised eyebrow.",
+        "No contextual filing accompanied the " + gameLabel + " result, sparing the Commission from deciding which details to redact.",
+        "The participants submitted no narrative evidence from " + gameLabel + ", a rare display of restraint that will not be rewarded."
       ], 1);
-    } else if (/comeback|came back|behind|turnaround|rally|last turn|final turn/.test(noteSignal)) {
+    } else if (context.hasDominance || context.hasStruggle) {
+      const controllingPlayer = context.dominantPlayer || (winners.find(name => context.signal.includes(name.toLocaleLowerCase())) || winner);
+      const strugglingPlayer = context.strugglingPlayer || (last.find(name => context.signal.includes(name.toLocaleLowerCase())) || null);
+      const controllingIdentity = controllingPlayer + (context.assignments[controllingPlayer] ? "'s " + context.assignments[controllingPlayer] : "");
+      const strugglingIdentity = strugglingPlayer
+        ? strugglingPlayer + (context.assignments[strugglingPlayer] ? "'s " + context.assignments[strugglingPlayer] : "")
+        : null;
+      const dominanceOptions = [];
+      if (/unmatched/.test(game.toLocaleLowerCase()) && strugglingIdentity) {
+        dominanceOptions.push(
+          gameLabel + " entered the arena with " + controllingIdentity +
+            " controlling the proceeding" + (context.early ? " from the opening exchange" : " early") +
+            ", while " + strugglingIdentity + " accumulated more evidence than credible threats.",
+          "In the " + gameLabel + " matchup, " + controllingIdentity +
+            " established jurisdiction" + (context.early ? " before the first-turn paperwork was dry" : " with suspicious efficiency") +
+            "; " + strugglingIdentity + " remained visible but rarely dangerous."
+        );
+      }
+      if (strugglingIdentity) {
+        dominanceOptions.push(
+          gameLabel + " appears to have placed " + controllingIdentity +
+            " in control" + (context.early ? " almost immediately" : " well before certification") +
+            ", while " + strugglingIdentity + " spent the evening filing ambitions that execution declined to support.",
+          "The supplemental " + gameLabel + " record shows " + controllingIdentity +
+            " holding authority without meaningful interruption; " + strugglingIdentity +
+            " supplied effort, visibility, and very little leverage."
+        );
+      } else {
+        dominanceOptions.push(
+          gameLabel + " placed " + controllingIdentity + " in control" +
+            (context.early ? " from the opening stages" : " with time to spare") +
+            ", and the table never produced a convincing transfer of authority.",
+          "The field report from " + gameLabel + " describes " + controllingIdentity +
+            " establishing a lead that survived every attempted correction."
+        );
+      }
+      noteFinding = choose(dominanceOptions, 1);
+    } else if (Object.keys(context.assignments).length) {
+      const assignedPlayers = Object.entries(context.assignments)
+        .map(([name, character]) => name + "'s " + character);
+      const assignmentList = assignedPlayers.length < 2
+        ? assignedPlayers[0]
+        : assignedPlayers.slice(0, -1).join(", ") + " and " + assignedPlayers[assignedPlayers.length - 1];
       noteFinding = choose([
-        "The field report describes a contest whose direction changed late enough to make earlier confidence look poorly advised.",
-        "Supplemental testimony indicates that the apparent order of events did not survive the closing stages.",
-        "The evening's momentum reportedly reversed under pressure, and several premature celebrations have been entered as evidence.",
-        "Investigators found signs of a late competitive reversal and one badly aged assumption about who was in control."
+        gameLabel + " entered the record with " + assignmentList + " carrying the evening's officially declared identities.",
+        "The supplemental " + gameLabel + " filing identifies " + assignmentList + ", leaving the Commission no excuse to confuse the matchup.",
+        "For purposes of the " + gameLabel + " docket, " + assignmentList + " were entered as the evening's responsible parties."
       ], 1);
-    } else if (/close|tight|narrow|one point|tiebreak|tie break|photo finish/.test(noteSignal)) {
+    } else if (context.comeback) {
       noteFinding = choose([
-        "The accompanying account suggests margins narrow enough to require both arithmetic and emotional supervision.",
-        "Field testimony describes a finish of inconvenient precision, with little room between confidence and paperwork.",
-        "The submitted context points to a result settled at close range and disputed at considerably greater volume.",
-        "Investigators treated the reported razor-thin finish with the seriousness normally reserved for missing components."
+        gameLabel + " changed direction late enough to make the table's earlier confidence look poorly advised.",
+        "Supplemental testimony from " + gameLabel + " indicates that the apparent order did not survive the closing stages.",
+        "The momentum in " + gameLabel + " reportedly reversed under pressure, and several premature celebrations have been entered as evidence.",
+        "Investigators found a late " + gameLabel + " reversal and at least one badly aged assumption about who was in control."
       ], 1);
-    } else if (/rule|illegal|mistake|misplay|forgot|wrong|dispute|argument/.test(noteSignal)) {
+    } else if (context.close) {
       noteFinding = choose([
-        "A procedural irregularity appears in the field report; it has been noted without granting anyone the rematch they are clearly seeking.",
-        "Supplemental testimony raised a rules question, and the Commission responded by locating the rulebook after the result was final.",
-        "The record hints at procedural confusion, which remains the official language for a table full of competing interpretations.",
-        "Investigators reviewed the reported rules disturbance and found the outcome more stable than the participants' recollections."
+        "The accompanying " + gameLabel + " account suggests margins narrow enough to require both arithmetic and emotional supervision.",
+        "Field testimony describes a " + gameLabel + " finish of inconvenient precision, with little room between confidence and paperwork.",
+        "The submitted context places " + gameLabel + " at close range and the resulting objections at considerably greater volume.",
+        "Investigators treated the reported " + gameLabel + " finish with the seriousness normally reserved for missing components."
       ], 1);
-    } else if (/luck|lucky|dice|roll|draw|topdeck|random/.test(noteSignal)) {
+    } else if (context.rules) {
       noteFinding = choose([
-        "The field report assigns a notable role to chance, an unregistered participant with an excellent record of avoiding interviews.",
-        "Supplemental testimony credits the random elements with suspiciously timely cooperation.",
-        "Investigators acknowledge an energetic contribution from probability, which has declined to explain itself.",
-        "The submitted context suggests fortune entered the contest early and never completed the required disclosure form."
+        "A procedural irregularity appears in the " + gameLabel + " report; it has been noted without granting the rematch already being drafted.",
+        "Supplemental " + gameLabel + " testimony raised a rules question, and the Commission located the rulebook after the result was final.",
+        "The " + gameLabel + " record hints at procedural confusion, the official term for a table full of competing interpretations.",
+        "Investigators reviewed the reported " + gameLabel + " rules disturbance and found the outcome more stable than the recollections."
       ], 1);
-    } else if (/betray|deal|alliance|team|partner|backstab|traitor/.test(noteSignal)) {
+    } else if (context.luck) {
       noteFinding = choose([
-        "The field report describes diplomacy of a temporary nature and trust with an even shorter shelf life.",
-        "Supplemental testimony references cooperation, negotiation, and the predictable administrative collapse of both.",
-        "Investigators found evidence of alliances assembled for convenience and dissolved for sport.",
-        "The night's political arrangements were reviewed and classified as binding only until they became inconvenient."
+        "The " + gameLabel + " field report assigns a notable role to chance, an unregistered participant with an excellent record of avoiding interviews.",
+        "Supplemental testimony credits the random elements of " + gameLabel + " with suspiciously timely cooperation.",
+        "Investigators acknowledge probability's energetic contribution to " + gameLabel + ", which it has declined to explain.",
+        "The submitted " + gameLabel + " context suggests fortune entered early and never completed the required disclosure form."
       ], 1);
-    } else if (/first time|new player|learning|teach|tutorial/.test(noteSignal)) {
+    } else if (context.alliance) {
       noteFinding = choose([
-        "The record indicates that at least one participant was still learning the machinery while others were already exploiting it.",
-        "Supplemental testimony places a newcomer near the center of events, where the rules are traditionally explained least helpfully.",
-        "The Commission notes the presence of fresh experience and the customary shortage of patient instruction.",
-        "Investigators considered the learning curve and found it steep, public, and fully documented."
+        "The " + gameLabel + " report describes diplomacy of a temporary nature and trust with an even shorter shelf life.",
+        "Supplemental " + gameLabel + " testimony references cooperation, negotiation, and the predictable collapse of both.",
+        "Investigators found " + gameLabel + " alliances assembled for convenience and dissolved for sport.",
+        "The political arrangements in " + gameLabel + " were classified as binding only until they became inconvenient."
       ], 1);
-    } else if (/snack|pizza|beer|drink|food|dessert/.test(noteSignal)) {
+    } else if (context.newcomer) {
       noteFinding = choose([
-        "The supporting record indicates that refreshments influenced morale, table space, and possibly several strategic decisions.",
-        "Supplemental testimony gives the snack operation a larger role than its official position would suggest.",
-        "Investigators found the catering competent and the strategic judgment correspondingly relaxed.",
-        "The night's provisions have been entered as material support, though not yet as a scoring category."
+        "The " + gameLabel + " record indicates that one participant was learning the machinery while others were already exploiting it.",
+        "Supplemental testimony places a newcomer near the center of " + gameLabel + ", where rules are traditionally explained least helpfully.",
+        "The Commission notes fresh " + gameLabel + " experience and the customary shortage of patient instruction.",
+        "Investigators considered the " + gameLabel + " learning curve and found it steep, public, and fully documented."
       ], 1);
-    } else if (cleanNote.length > 120) {
+    } else if (context.refreshments) {
       noteFinding = choose([
-        "A substantial field report shaped the Commission's reading of the evening, though its particulars remain sealed from public recital.",
-        "Investigators reviewed an unusually detailed supplemental filing and incorporated its general character without reproducing the testimony.",
-        "The lengthy account from the table influenced the tone of this finding, but not the certified order of finish.",
-        "The Commission received a generous narrative record and has condensed it to protect both the participants and the reader.",
-        "Substantial background material informed this ruling; the most colorful particulars remain responsibly off the public docket."
+        "The supporting " + gameLabel + " record indicates that refreshments influenced morale, table space, and possibly several decisions.",
+        "Supplemental testimony gives the " + gameLabel + " snack operation a larger role than its official position would suggest.",
+        "Investigators found the catering around " + gameLabel + " competent and the strategic judgment correspondingly relaxed.",
+        "The provisions supporting " + gameLabel + " have been entered as material aid, though not yet as a scoring category."
       ], 1);
-    } else if (/[!?]/.test(cleanNote)) {
+    } else if (context.mishap) {
       noteFinding = choose([
-        "The accompanying field note conveyed unusual energy, which the Commission has translated into calmer administrative language.",
-        "Supplemental testimony arrived with emphasis; the official record acknowledges the mood without repeating the allegation.",
-        "A spirited note from the table informed this review and was then placed at a safe distance from the minutes.",
-        "The filing arrived with unmistakable emphasis and has been converted into the Commission's preferred indoor voice.",
-        "Investigators noted the intensity of the supplemental account and quietly removed the exclamation marks from evidence."
+        "The " + gameLabel + " filing includes a table-side incident that affected the atmosphere more than the certified result.",
+        "Investigators logged an unexpected interruption during " + gameLabel + " and returned the surviving components to service.",
+        "The supplemental " + gameLabel + " record contains a physical-world complication the rulebook was not prepared to govern.",
+        "An unscheduled table event entered the " + gameLabel + " proceedings and has been classified as environmental interference."
+      ], 1);
+    } else if (context.keywords.length) {
+      const subjects = context.keywords.slice(0, 2).join(" and ");
+      noteFinding = choose([
+        "The " + gameLabel + " field report contains details involving " + subjects + ", translated here into calmer administrative language.",
+        "Supplemental " + gameLabel + " testimony places details involving " + subjects + " near the center of the evening without altering the result.",
+        "Investigators treated the reported details involving " + subjects + " as material " + gameLabel + " context and not as grounds for appeal."
       ], 1);
     } else {
       noteFinding = choose([
-        "A brief field note influenced the character of this review without being quoted or entered as a separate finding.",
-        "The Commission considered the submitted context, preserved its spirit, and declined to repeat the particulars.",
-        "Supplemental context was reviewed in chambers and used only to season the ruling, not rewrite the result.",
-        "The additional account supplied useful atmosphere and no admissible reason to alter the outcome.",
-        "A short dispatch from the table informed the ruling while remaining safely outside the quoted record."
+        "A brief " + gameLabel + " field note influenced this review without being quoted or entered as a separate finding.",
+        "The Commission considered the submitted " + gameLabel + " context, preserved its meaning, and declined to repeat its wording.",
+        "Supplemental " + gameLabel + " context was reviewed in chambers and used to season the ruling, not rewrite the result."
       ], 1);
+    }
+
+    if (contextHasLongPhraseOverlap(cleanNote, noteFinding)) {
+      noteFinding = gameLabel + " arrived with supplemental testimony whose meaning informed this ruling without entering the record word for word.";
     }
 
     const lowerGame = game.toLocaleLowerCase();
@@ -5811,13 +6095,22 @@
     leaderBadges.innerHTML = "";
 
     if (leader) {
-      getPlayerBadges(leader, 1).forEach(badge => {
+      const badges = getPlayerBadges(leader, 1);
+      const visibleBadges = badges.slice(0, 2);
+      visibleBadges.forEach(badge => {
         const item = document.createElement("span");
         item.className = "home-leader-badge";
         item.textContent = badge.game ? badge.name : badge.icon + " " + badge.name;
         item.title = badge.description;
         leaderBadges.appendChild(item);
       });
+      if (badges.length > visibleBadges.length) {
+        const more = document.createElement("span");
+        more.className = "home-leader-badge home-leader-badge-more";
+        more.textContent = "+" + (badges.length - visibleBadges.length) + " more";
+        more.title = "Open " + leader.name + " to see every badge.";
+        leaderBadges.appendChild(more);
+      }
     }
 
     if (!leaderBadges.children.length) {
