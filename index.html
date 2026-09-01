@@ -10,7 +10,17 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- Bump this value with every published revision of the root index.html. -->
-  <meta name="build-version" content="2026.08.26.10">
+  <meta name="build-version" content="2026.09.01.12">
+  <meta name="description" content="Turn every board game night into league history with standings, memories, achievements, and official Fed rulings.">
+  <meta property="og:title" content="The Fed — Board Game League">
+  <meta property="og:description" content="Every game night becomes league history.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://the-fed-board-game-league.gregharshman87.chatgpt.site/">
+  <meta property="og:image" content="https://the-fed-board-game-league.gregharshman87.chatgpt.site/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Fed — Board Game League">
+  <meta name="twitter:description" content="Every game night becomes league history.">
+  <meta name="twitter:image" content="https://the-fed-board-game-league.gregharshman87.chatgpt.site/og.png">
   <title>The Fed</title>
 
   <style>
@@ -3588,6 +3598,308 @@
       .home-ruling-summary { align-items: flex-start; }
     }
     /* AUDIT REFINEMENTS + ACHIEVEMENTS — END */
+
+    /* GAME NIGHT COMMAND CENTER — START */
+    #homePanel.command-center {
+      display: block;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    #homePanel.command-center > .tab-intro,
+    #homePanel.command-center > .snapshot-item,
+    #homePanel.command-center > .snapshot-secondary { display: none; }
+
+    .command-center .home-dashboard {
+      display: grid;
+      gap: 14px;
+    }
+
+    .command-hero {
+      position: relative;
+      display: grid;
+      min-height: 310px;
+      padding: 30px;
+      overflow: hidden;
+      grid-template-columns: minmax(0, 1.3fr) minmax(240px, .7fr);
+      gap: 28px;
+      align-items: end;
+      background:
+        linear-gradient(105deg, rgba(4, 14, 25, .98) 0 48%, rgba(8, 31, 45, .9) 100%),
+        #071525;
+      border: 1px solid rgba(216, 173, 69, .45);
+      border-radius: 18px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .34), inset 0 0 70px rgba(216, 173, 69, .035);
+    }
+
+    .command-hero::before {
+      content: "FED 01";
+      position: absolute;
+      top: 19px;
+      right: 24px;
+      color: rgba(241, 212, 126, .44);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .22em;
+    }
+
+    .command-hero::after {
+      content: "";
+      position: absolute;
+      right: -75px;
+      bottom: -110px;
+      width: 310px;
+      height: 310px;
+      border: 1px solid rgba(216, 173, 69, .13);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 20px rgba(216, 173, 69, .025), inset 0 0 0 21px rgba(216, 173, 69, .09);
+      pointer-events: none;
+    }
+
+    .command-copy,
+    .command-champion { position: relative; z-index: 1; }
+
+    .command-kicker {
+      display: block;
+      margin-bottom: 10px;
+      color: #d8ad45;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .command-copy h2 {
+      max-width: 580px;
+      margin: 0;
+      color: #f8f1df;
+      font-size: clamp(34px, 5vw, 55px);
+      line-height: .98;
+      letter-spacing: -.025em;
+    }
+
+    .command-copy p {
+      max-width: 540px;
+      margin: 15px 0 22px;
+      color: #b9c5ce;
+      font-size: 14px;
+    }
+
+    .command-primary-action {
+      display: inline-flex;
+      min-height: 52px;
+      margin: 0;
+      padding: 12px 18px;
+      align-items: center;
+      gap: 10px;
+      color: #07111d;
+      background: linear-gradient(145deg, #f1d47e, #c9972e);
+      border: 1px solid #f4dc91;
+      border-radius: 9px;
+      box-shadow: 0 10px 28px rgba(216, 173, 69, .18);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .035em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .command-primary-action:hover { color: #020609; background: linear-gradient(145deg, #f7df94, #d4a43c); }
+    .command-primary-action span { font-size: 20px; line-height: 1; }
+
+    .command-champion {
+      width: 100%;
+      margin: 0;
+      padding: 18px;
+      background: rgba(3, 12, 20, .64);
+      border: 1px solid rgba(216, 173, 69, .26);
+      border-radius: 13px;
+      backdrop-filter: blur(8px);
+      box-shadow: none;
+      text-align: left;
+    }
+
+    .command-champion:hover { background: rgba(9, 28, 42, .88); border-color: rgba(241, 212, 126, .56); }
+    .command-champion:disabled { cursor: default; opacity: 1; }
+
+    .command-champion-label,
+    .command-stat-label {
+      display: block;
+      color: #8fa1ae;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .command-champion-name {
+      display: block;
+      margin: 6px 0 3px;
+      overflow: hidden;
+      color: #f1d47e;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.05;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .command-champion-record { color: #d5dde2; font-size: 12px; }
+
+    .command-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .command-stat-card {
+      min-width: 0;
+      min-height: 116px;
+      padding: 16px;
+      background: linear-gradient(145deg, #0b1c2e, #07131f);
+      border: 1px solid #29415a;
+      border-radius: 13px;
+    }
+
+    .command-stat-value {
+      display: block;
+      margin: 9px 0 5px;
+      overflow: hidden;
+      color: #f4eee1;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+      line-height: 1.15;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .command-stat-detail { color: #9eacb7; font-size: 11px; line-height: 1.4; }
+
+    .command-center .home-latest-ruling {
+      padding: 20px;
+      background: linear-gradient(145deg, #0b1c2e, #07131f);
+      border: 1px solid #29415a;
+      border-radius: 13px;
+    }
+
+    .command-center .fed-wire {
+      background: #07131f;
+      border: 1px solid #29415a;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 760px) {
+      .command-center .home-dashboard { gap: 8px; }
+      .command-hero {
+        min-height: 0;
+        padding: 21px 18px 18px;
+        grid-template-columns: 1fr;
+        gap: 17px;
+        border-radius: 13px;
+      }
+      .command-copy h2 { max-width: 330px; font-size: clamp(32px, 10vw, 43px); }
+      .command-copy p { margin: 11px 0 16px; font-size: 12px; }
+      .command-primary-action { width: 100%; min-height: 50px; justify-content: center; }
+      .command-champion { padding: 13px 14px; }
+      .command-champion-name { font-size: 25px; }
+      .command-stat-grid { grid-template-columns: 1fr; gap: 8px; }
+      .command-stat-card {
+        display: grid;
+        min-height: 78px;
+        padding: 13px 14px;
+        grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
+        grid-template-rows: auto auto;
+        column-gap: 12px;
+        align-items: center;
+      }
+      .command-stat-label { grid-row: 1 / 3; align-self: center; }
+      .command-stat-value { margin: 0 0 2px; font-size: 18px; }
+      .command-center .home-latest-ruling { padding: 13px 10px 10px; }
+    }
+    /* GAME NIGHT COMMAND CENTER — END */
+
+    /* CORE LOOP QUALITY PASS — START */
+    .recent-games { display: flex; gap: 7px; margin-top: 9px; overflow-x: auto; scrollbar-width: none; }
+    .recent-games:empty { display: none; }
+    .recent-games::-webkit-scrollbar { display: none; }
+    .recent-game-button {
+      flex: 0 0 auto;
+      min-height: 34px;
+      margin: 0;
+      padding: 7px 10px;
+      color: #d4dde3;
+      background: #0b1c2e;
+      border: 1px solid #29415a;
+      border-radius: 999px;
+      box-shadow: none;
+      font-size: 11px;
+    }
+    .recent-game-button:hover { color: #f1d47e; background: #102740; border-color: rgba(216, 173, 69, .45); }
+    .draft-status { min-height: 18px; margin: 7px 0 0; color: #8fa1ae; font-size: 10px; }
+
+    .ruling-reveal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      padding: 18px;
+      place-items: center;
+      background: rgba(1, 6, 11, .86);
+      backdrop-filter: blur(10px);
+    }
+    .ruling-reveal-backdrop[hidden] { display: none; }
+    .ruling-reveal {
+      position: relative;
+      width: min(620px, 100%);
+      max-height: calc(100dvh - 36px);
+      padding: 28px;
+      overflow-y: auto;
+      background:
+        radial-gradient(circle at 90% 0, rgba(216, 173, 69, .12), transparent 31%),
+        linear-gradient(145deg, #0b1c2e, #06101b);
+      border: 1px solid rgba(216, 173, 69, .55);
+      border-radius: 17px;
+      box-shadow: 0 32px 90px rgba(0, 0, 0, .58);
+    }
+    .ruling-reveal-seal {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 19px;
+      place-items: center;
+      color: #07111d;
+      background: linear-gradient(145deg, #f1d47e, #bd8824);
+      border: 1px solid #f7e09c;
+      border-radius: 50%;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      font-weight: 900;
+    }
+    .ruling-reveal-kicker { color: #d8ad45; font-size: 9px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+    .ruling-reveal h2 { margin: 7px 0 17px; color: #f8f1df; font-size: clamp(29px, 7vw, 43px); line-height: 1.02; }
+    .ruling-reveal-report {
+      margin: 0;
+      padding: 18px 0;
+      color: #dbe3e8;
+      border-top: 1px solid #29415a;
+      border-bottom: 1px solid #29415a;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      line-height: 1.58;
+    }
+    .ruling-reveal-actions { display: flex; gap: 8px; margin-top: 19px; }
+    .ruling-reveal-actions button { flex: 1; min-height: 46px; margin: 0; }
+    .ruling-reveal-actions .ruling-primary { color: #07111d; background: #d8ad45; border-color: #f1d47e; font-weight: 900; }
+
+    @media (max-width: 600px) {
+      .ruling-reveal { padding: 22px 18px; border-radius: 14px; }
+      .ruling-reveal-report { font-size: 16px; }
+      .ruling-reveal-actions { flex-direction: column; }
+    }
+    /* CORE LOOP QUALITY PASS — END */
   </style>
 </head>
 
@@ -3681,7 +3993,7 @@
     <p class="build-info">Build <code id="buildVersionLabel">—</code></p>
   </div>
 
-  <section id="homePanel" class="dashboard-snapshot" aria-label="League snapshot">
+  <section id="homePanel" class="dashboard-snapshot command-center" aria-label="Game Night Command Center">
     <div class="tab-intro">
       <span class="tab-intro-kicker">Home · The report out</span>
       <h2>League Briefing</h2>
@@ -3705,15 +4017,38 @@
 
     <!-- HOME TAB REDESIGN — START: read-only presentation of existing league data. -->
     <div class="home-dashboard">
-      <section class="home-leader-card" aria-labelledby="homeLeaderLabel">
-        <div class="home-leader-kicker" id="homeLeaderLabel">League Leader</div>
-        <button id="homeLeaderButton" class="home-leader-button" type="button">
-          <span class="home-leader-identity">
-            <strong id="homeLeaderName">Pending appointment</strong>
-            <span id="homeLeaderStats">No sanctioned games yet</span>
-          </span>
+      <section class="command-hero" aria-labelledby="commandCenterTitle">
+        <div class="command-copy">
+          <span class="command-kicker">Game Night Command Center</span>
+          <h2 id="commandCenterTitle">Tonight’s result becomes league history.</h2>
+          <p id="commandCenterBrief">File the final standings and let the Commission issue its official ruling.</p>
+          <a class="command-primary-action" href="#gameFormCard"><span aria-hidden="true">＋</span> Log Tonight’s Game</a>
+        </div>
+        <button id="homeLeaderButton" class="command-champion" type="button" aria-labelledby="homeLeaderLabel homeLeaderName">
+          <span class="command-champion-label" id="homeLeaderLabel">Current Champion</span>
+          <strong id="homeLeaderName" class="command-champion-name">Pending appointment</strong>
+          <span id="homeLeaderStats" class="command-champion-record">No sanctioned games yet</span>
         </button>
-        <div id="homeLeaderBadges" class="home-leader-badges" aria-label="Leader badges"></div>
+      </section>
+
+      <div id="homeLeaderBadges" class="home-leader-badges" aria-label="Leader badges" hidden></div>
+
+      <section class="command-stat-grid" aria-label="League intelligence">
+        <article class="command-stat-card">
+          <span class="command-stat-label">Latest Upset</span>
+          <strong id="commandUpsetValue" class="command-stat-value">Awaiting evidence</strong>
+          <span id="commandUpsetDetail" class="command-stat-detail">Log a game to open the case.</span>
+        </article>
+        <article class="command-stat-card">
+          <span class="command-stat-label">Rivalry Watch</span>
+          <strong id="commandRivalryValue" class="command-stat-value">No rivalry filed</strong>
+          <span id="commandRivalryDetail" class="command-stat-detail">The docket needs repeat matchups.</span>
+        </article>
+        <article class="command-stat-card">
+          <span class="command-stat-label">Next Milestone</span>
+          <strong id="commandMilestoneValue" class="command-stat-value">First victory</strong>
+          <span id="commandMilestoneDetail" class="command-stat-detail">Every dynasty starts somewhere.</span>
+        </article>
       </section>
 
       <section class="home-latest-ruling" aria-labelledby="homeLatestHeading">
@@ -3750,6 +4085,8 @@
       <label class="field-label" for="gameName">Game played</label>
       <input id="gameName" list="gameTitles" autocomplete="off" placeholder="Enter the game title">
       <datalist id="gameTitles"></datalist>
+      <div id="recentGames" class="recent-games" aria-label="Recent games"></div>
+      <p id="gameDraftStatus" class="draft-status" role="status" aria-live="polite"></p>
     </div>
 
     <div class="form-step">
@@ -3773,7 +4110,7 @@
     <div class="form-step optional-step">
       <h3 class="form-step-heading"><span class="step-number">4</span>Optional context</h3>
       <label class="field-label" for="gameNotes">Game Night Memories (Optional)</label>
-      <p class="field-help">Add a funny moment, inside joke, or upload photos from your game night. These can be featured in your AI Fed Review and saved in your Memories timeline.</p>
+      <p class="field-help">Add a funny moment, inside joke, or upload photos from game night. Verified details can shape the Fed Review and are saved in your Memories timeline.</p>
       <textarea id="gameNotes" maxlength="500" placeholder="Add a quick note for the record"></textarea>
       <div class="memory-photo-controls">
         <button class="memory-photo-button" type="button" onclick="document.getElementById('gamePhotos').click()">📷 Add Photos</button>
@@ -3838,6 +4175,19 @@
 <div id="gameLoggedBanner" class="game-logged-banner" role="status" aria-live="assertive" hidden>
   <span class="game-logged-check" aria-hidden="true">✓</span>
   <span id="gameLoggedMessage">Game Logged</span>
+</div>
+
+<div id="rulingRevealBackdrop" class="ruling-reveal-backdrop" hidden>
+  <section id="rulingReveal" class="ruling-reveal" role="dialog" aria-modal="true" aria-labelledby="rulingRevealTitle" aria-describedby="rulingRevealReport">
+    <div class="ruling-reveal-seal" aria-hidden="true">F</div>
+    <span class="ruling-reveal-kicker">Official Commission Finding</span>
+    <h2 id="rulingRevealTitle">Ruling Certified</h2>
+    <p id="rulingRevealReport" class="ruling-reveal-report"></p>
+    <div class="ruling-reveal-actions">
+      <button id="rulingRevealClose" type="button">Close</button>
+      <button id="rulingRevealMemory" class="ruling-primary" type="button">View in Memories</button>
+    </div>
+  </section>
 </div>
 
 <aside id="updateBanner" class="update-banner" role="status" aria-live="polite" hidden>
@@ -4145,6 +4495,10 @@
   let achievementCatalog = [];
   let achievementDialogReturnFocus = null;
   let submissionConfirmationTimer = null;
+  let gameDraftTimer = null;
+  let gameDraftRestored = false;
+  let restoringGameDraft = false;
+  let rulingRevealReturnFocus = null;
 
   function saveData() {
     recalculateStandings(state);
@@ -4435,6 +4789,7 @@
       message.className = "empty-order";
       message.textContent = "Select players above first.";
       orderBox.appendChild(message);
+      scheduleGameDraftSave();
       return;
     }
 
@@ -4457,6 +4812,7 @@
       select.value = previousPlace <= checkedPlayers.length
         ? previousPlace
         : index + 1;
+      select.addEventListener("change", scheduleGameDraftSave);
 
       const name = document.createElement("span");
       const player = players.find(entry => entry.id === box.value);
@@ -4465,6 +4821,7 @@
       row.appendChild(name);
       orderBox.appendChild(row);
     });
+    scheduleGameDraftSave();
   }
 
   function ordinalSuffix(number) {
@@ -4647,6 +5004,99 @@
     pendingGamePhotos = [];
     document.getElementById("gamePhotos").value = "";
     renderMemoryPhotoPreview();
+    clearGameDraft();
+  }
+
+  function readGameDraft() {
+    try {
+      const draft = JSON.parse(localStorage.getItem("fedGameDraft") || "null");
+      return draft && typeof draft === "object" ? draft : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function clearGameDraft() {
+    if (gameDraftTimer) clearTimeout(gameDraftTimer);
+    gameDraftTimer = null;
+    try { localStorage.removeItem("fedGameDraft"); } catch (error) {}
+    const status = document.getElementById("gameDraftStatus");
+    if (status) status.textContent = "";
+  }
+
+  function saveGameDraft() {
+    if (editingGameId) return;
+    const game = document.getElementById("gameName")?.value.trim() || "";
+    const note = document.getElementById("gameNotes")?.value.trim() || "";
+    const participantIds = Array.from(document.querySelectorAll(".participant:checked")).map(input => input.value);
+    const places = Object.fromEntries(Array.from(document.querySelectorAll("#finishingOrder select[data-player]"))
+      .map(select => [select.dataset.player, Number(select.value)]));
+    if (!game && !note && !participantIds.length) {
+      clearGameDraft();
+      return;
+    }
+    try {
+      localStorage.setItem("fedGameDraft", JSON.stringify({ game, note, participantIds, places, savedAt: new Date().toISOString() }));
+      document.getElementById("gameDraftStatus").textContent = "Draft saved on this device";
+    } catch (error) {
+      document.getElementById("gameDraftStatus").textContent = "Draft could not be saved";
+    }
+  }
+
+  function scheduleGameDraftSave() {
+    if (editingGameId || gameDraftRestored === false || restoringGameDraft) return;
+    if (gameDraftTimer) clearTimeout(gameDraftTimer);
+    gameDraftTimer = setTimeout(saveGameDraft, 180);
+  }
+
+  function restoreGameDraft() {
+    if (gameDraftRestored || editingGameId) return;
+    gameDraftRestored = true;
+    const draft = readGameDraft();
+    if (!draft) return;
+    restoringGameDraft = true;
+    document.getElementById("gameName").value = typeof draft.game === "string" ? draft.game : "";
+    document.getElementById("gameNotes").value = typeof draft.note === "string" ? draft.note : "";
+    const participantIds = new Set(Array.isArray(draft.participantIds) ? draft.participantIds : []);
+    document.querySelectorAll(".participant").forEach(input => { input.checked = participantIds.has(input.value); });
+    updateFinishingOrder();
+    document.querySelectorAll("#finishingOrder select[data-player]").forEach(select => {
+      const savedPlace = Number(draft.places?.[select.dataset.player]);
+      if (savedPlace >= 1 && savedPlace <= participantIds.size) select.value = savedPlace;
+    });
+    restoringGameDraft = false;
+    document.getElementById("gameDraftStatus").textContent = "Unfinished game restored";
+  }
+
+  function useRecentGame(gameTitle) {
+    const priorGame = games.find(gameRecord => normalizeGameLookupName(gameRecord.game) === normalizeGameLookupName(gameTitle));
+    document.getElementById("gameName").value = gameTitle;
+    const lineup = new Set((priorGame?.results || []).map(result => result.playerId));
+    document.querySelectorAll(".participant").forEach(input => { input.checked = lineup.has(input.value); });
+    updateFinishingOrder();
+    document.getElementById("gameNotes").focus();
+    document.getElementById("gameDraftStatus").textContent = priorGame
+      ? "Last lineup selected · update the finishing order"
+      : "Game selected";
+    scheduleGameDraftSave();
+  }
+
+  function renderRecentGames() {
+    const box = document.getElementById("recentGames");
+    box.innerHTML = "";
+    const seen = new Set();
+    games.forEach(gameRecord => {
+      const key = normalizeGameLookupName(gameRecord.game);
+      if (!key || seen.has(key) || seen.size >= 5) return;
+      seen.add(key);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "recent-game-button";
+      button.textContent = gameRecord.game;
+      button.setAttribute("aria-label", "Use " + gameRecord.game + " with its last lineup");
+      button.addEventListener("click", () => useRecentGame(gameRecord.game));
+      box.appendChild(button);
+    });
   }
 
   function startEdit(gameId) {
@@ -4775,9 +5225,9 @@
     button.innerHTML = '<span class="submit-spinner" aria-hidden="true"></span>Submitting…';
     await new Promise(resolve => setTimeout(resolve, 180));
 
-    const submitted = await reviewGame();
+    const submittedGame = await reviewGame();
     const currentButton = document.getElementById("gameSubmitButton");
-    if (!submitted) {
+    if (!submittedGame) {
       currentButton.disabled = false;
       currentButton.textContent = originalText;
       return;
@@ -4787,6 +5237,7 @@
     currentButton.disabled = true;
     currentButton.innerHTML = '<span class="submit-check" aria-hidden="true">✓</span>' + successMessage;
     showSubmissionConfirmation(successMessage);
+    showRulingReveal(submittedGame, wasEditing);
     await new Promise(resolve => setTimeout(resolve, 1000));
     currentButton.disabled = false;
     currentButton.textContent = "Submit for Review";
@@ -4801,6 +5252,29 @@
       banner.hidden = true;
       submissionConfirmationTimer = null;
     }, 1600);
+  }
+
+  function showRulingReveal(gameRecord, wasEditing) {
+    rulingRevealReturnFocus = document.activeElement;
+    document.getElementById("rulingRevealTitle").textContent = wasEditing
+      ? gameRecord.game + " Ruling Updated"
+      : gameRecord.game + " Certified";
+    document.getElementById("rulingRevealReport").textContent = gameRecord.report;
+    const backdrop = document.getElementById("rulingRevealBackdrop");
+    backdrop.hidden = false;
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => document.getElementById("rulingRevealClose").focus());
+  }
+
+  function closeRulingReveal(returnFocus = true) {
+    const backdrop = document.getElementById("rulingRevealBackdrop");
+    if (backdrop.hidden) return;
+    backdrop.hidden = true;
+    document.body.style.overflow = "";
+    if (returnFocus && rulingRevealReturnFocus && document.contains(rulingRevealReturnFocus)) {
+      rulingRevealReturnFocus.focus();
+    }
+    rulingRevealReturnFocus = null;
   }
 
   function normalizeGameLookupName(value) {
@@ -4966,7 +5440,9 @@
       place: result.place,
       points: 1 + (groupCount - (placementGroups.indexOf(result.place) + 1) + 1)
     }));
-    const gameKnowledge = await getGameKnowledge(game);
+    // Rulings stay deterministic and offline. External reference text made the
+    // voice slower and less consistent without adding trustworthy game-night facts.
+    const gameKnowledge = null;
     const gameRecord = {
       id: existingGame ? existingGame.id : createId("game"),
       game: game,
@@ -5005,7 +5481,7 @@
 
     saveData();
     render();
-    return true;
+    return gameRecord;
   }
 
   function toggleSetup() {
@@ -5088,19 +5564,19 @@
       hasDominance: new RegExp(dominantPattern, "i").test(text),
       hasStruggle: new RegExp(strugglePattern, "i").test(text),
       early: /turn one|first turn|opening turn|from (?:the )?start|right away|immediately/.test(signal),
-      comeback: /comeback|came back|behind|turnaround|rally|last turn|final turn/.test(signal),
+      comeback: /comeback|came back|from behind|turnaround|rally/.test(signal),
       close: /close|tight|narrow|one point|tiebreak|tie break|photo finish/.test(signal),
       rules: /rule|illegal|mistake|misplay|forgot|wrong|dispute|argument/.test(signal),
       luck: /luck|lucky|dice|roll|draw|topdeck|random/.test(signal),
       alliance: /betray|deal|alliance|team|partner|backstab|traitor/.test(signal),
       newcomer: /first time|new player|learning|teach|tutorial/.test(signal),
       refreshments: /snack|pizza|beer|drink|food|dessert/.test(signal),
-      mishap: /spill|spilled|drop|dropped|broke|broken|knock|cat|dog|table/.test(signal),
+      mishap: /spill|spilled|drop|dropped|broke|broken|knocked over|cat jumped|dog jumped/.test(signal),
       keywords
     };
   }
 
-  function generateCaseReport(game, results, note = "", photoCount = 0, gameKnowledge = null) {
+  function generateLegacyCaseReport(game, results, note = "", photoCount = 0, gameKnowledge = null) {
     const groups = [...new Set(results.map(result => result.place))]
       .sort((a, b) => a - b)
       .map(place => results.filter(result => result.place === place));
@@ -5501,6 +5977,532 @@
 
     const reportBody = cleanNote ? noteFinding : gameFlavor;
     return [resultLead, reportBody, choose(closings, 3)].join(" ");
+  }
+
+  function placementWord(place) {
+    const words = { 1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth" };
+    return words[Number(place)] || Number(place) + ordinalSuffix(Number(place));
+  }
+
+  function formatNaturalList(items) {
+    const values = items.filter(Boolean);
+    if (values.length < 2) return values[0] || "";
+    if (values.length === 2) return values[0] + " and " + values[1];
+    return values.slice(0, -1).join(", ") + ", and " + values[values.length - 1];
+  }
+
+  function getReviewLanguagePack(game) {
+    const lowerGame = String(game || "").toLocaleLowerCase();
+    const packs = [
+      {
+        pattern: /blood rage/,
+        findings: [
+          "The Commission counted the glory, reviewed the clan records, and found the final order properly apocalyptic.",
+          "The clans may prepare for Ragnarök again, but this result has already survived the glory audit."
+        ],
+        closings: [
+          "Certification is complete; all objections must be filed with the losing clans.",
+          "The ruling stands until Ragnarök provides a more convenient version of events."
+        ]
+      },
+      {
+        pattern: /terraform|mars/,
+        findings: [
+          "The oxygen, temperature, and ocean ledgers remain complicated; the victory record does not.",
+          "Mars may still require extensive work, but the standings have passed inspection."
+        ],
+        closings: ["The red planet remains unsettled; this result does not."]
+      },
+      {
+        pattern: /wingspan/,
+        findings: [
+          "The habitats were reviewed, the eggs accounted for, and the competitive plumage entered into evidence.",
+          "The aviary has gone quiet, leaving the final flock in unmistakable order."
+        ],
+        closings: ["The finding is final; further objections may be directed to the nearest raven."]
+      },
+      {
+        pattern: /unmatched/,
+        findings: [
+          "The fighters have left the arena, and every heroic claim has been reduced to its printed value.",
+          "The health dials may be reset, but the official matchup record will not."
+        ],
+        closings: ["The arena is closed; schemes do not qualify as appeals."]
+      },
+      {
+        pattern: /catan/,
+        findings: [
+          "Road permits, settlement claims, and the regional sheep supply were examined before certification.",
+          "The robber was questioned, the longest road measured, and the victory points accepted as filed."
+        ],
+        closings: ["The island is released from supervision; the sheep remain persons of interest."]
+      },
+      {
+        pattern: /ticket.*ride|ride.*ticket/,
+        findings: ["The route map survived inspection, and the final destination has been entered into the permanent timetable."],
+        closings: ["The rail authority considers the matter closed and the missed connections personal."]
+      },
+      {
+        pattern: /pandemic/,
+        findings: ["Outbreak records and research stations were reconciled before the final result cleared containment."],
+        closings: ["The cubes have been advised not to travel; the ruling may proceed."]
+      },
+      {
+        pattern: /azul/,
+        findings: ["The tile ledger confirms that aesthetic judgment and competitive restraint did not occupy the same wall."],
+        closings: ["The pattern is complete; broken-tile objections will not be scored."]
+      },
+      {
+        pattern: /splendor/,
+        findings: ["The gem reserve was counted twice, and the nobles continue to deny influencing the result."],
+        closings: ["The prestige is certified; the gemstones remain Commission property."]
+      },
+      {
+        pattern: /carcassonne/,
+        findings: ["The tile map was certified despite several meeples maintaining overlapping theories of land use."],
+        closings: ["The fields are closed to further claims until the next tile is drawn."]
+      },
+      {
+        pattern: /root/,
+        findings: ["The woodland factions have returned to their clearings, leaving one official version of the revolt."],
+        closings: ["Future uprisings must be filed in triplicate."]
+      },
+      {
+        pattern: /dune/,
+        findings: ["The spice accounts remain volatile, the desert remains inhospitable, and the filed result remains clear."],
+        closings: ["The spice must flow; appeals need not."]
+      },
+      {
+        pattern: /everdell/,
+        findings: ["The woodland permits were ambitious, the critters overcommitted, and the final season properly recorded."],
+        closings: ["Winter has arrived, and the docket is closed."]
+      },
+      {
+        pattern: /ark nova/,
+        findings: ["The zoo ledger reflects ambitious enclosures, enthusiastic conservation, and a fully documented hierarchy."],
+        closings: ["The animals may be released from testimony; the result may not."]
+      },
+      {
+        pattern: /spirit island/,
+        findings: ["The island spirits concluded their enforcement action and left the final authority unmistakable."],
+        closings: ["The invaders may reconsider their plans; the Commission will not reconsider this result."]
+      }
+    ];
+    const matchedPack = packs.find(pack => pack.pattern.test(lowerGame));
+    return matchedPack ? { ...matchedPack, known: true } : {
+      known: false,
+      findings: [
+        "The board, cards, and final positions were examined; the record now contains exactly one official version of events.",
+        "The components have returned to the box, but the finishing order remains in permanent circulation.",
+        "The Commission reviewed the table evidence and found the result clearer than the postgame explanations."
+      ],
+      closings: [
+        "Certification is complete; remaining objections may be expressed while packing the box.",
+        "The docket is closed, and the rematch window is officially open.",
+        "The result stands until another game night produces better evidence."
+      ]
+    };
+  }
+
+  function generatePlacementFocusedCaseReport(game, results, note = "", photoCount = 0, gameKnowledge = null) {
+    const orderedResults = [...results].sort((left, right) =>
+      Number(left.place) - Number(right.place) || left.name.localeCompare(right.name)
+    );
+    const groups = [...new Set(orderedResults.map(result => Number(result.place)))]
+      .map(place => orderedResults.filter(result => Number(result.place) === place));
+    const winners = groups[0] || [];
+    const winnerNames = formatNaturalList(winners.map(result => result.name));
+    const sharedWin = winners.length > 1;
+    const gameLabel = "“" + game + "”";
+    const cleanNote = String(note || "").trim().slice(0, 500);
+    const context = interpretGameContext(cleanNote, game, orderedResults);
+    const languagePack = getReviewLanguagePack(game);
+    const signature = [game, cleanNote, photoCount, ...orderedResults.map(result => result.name + result.place)].join("|");
+    let seed = 0;
+    for (const character of signature) seed = ((seed << 5) - seed + character.charCodeAt(0)) | 0;
+
+    const previousReports = games
+      .filter(gameRecord => gameRecord.id !== editingGameId && typeof gameRecord.report === "string")
+      .map(gameRecord => gameRecord.report.toLocaleLowerCase());
+    const chooseApproved = (options, offset = 0) => {
+      const usable = options.filter(Boolean);
+      if (!usable.length) return "";
+      const ranked = usable.map((option, index) => ({
+        option,
+        repeats: previousReports.filter(report => report.includes(option.toLocaleLowerCase())).length,
+        order: Math.abs(seed + offset * 97 + index * 31) % 997
+      })).sort((left, right) => left.repeats - right.repeats || left.order - right.order);
+      return ranked[0].option;
+    };
+
+    const placementClauses = groups.slice(1).map((group, index) => {
+      const names = formatNaturalList(group.map(result => result.name));
+      const place = placementWord(group[0].place);
+      return group.length > 1 ? names + " tied for " + place : names + " finished " + place;
+    });
+    placementClauses.forEach((clause, index) => {
+      if (index > 0) placementClauses[index] = clause.replace(" finished ", " ");
+    });
+    let resultSentence;
+    if (groups.length === 1) {
+      resultSentence = winnerNames + " shared victory in " + gameLabel + ", producing a complete roster of winners and no useful appeals queue.";
+    } else {
+      const resultOpening = sharedWin
+        ? winnerNames + " shared victory in " + gameLabel
+        : winnerNames + " secured victory in " + gameLabel;
+      resultSentence = resultOpening + "; " + formatNaturalList(placementClauses) + ".";
+    }
+
+    let findingSentence = "";
+    if (cleanNote && (context.hasDominance || context.hasStruggle)) {
+      const controllingPlayer = context.dominantPlayer || winnerNames;
+      const strugglingPlayer = context.strugglingPlayer;
+      findingSentence = strugglingPlayer
+        ? "Filed testimony places " + controllingPlayer + " in control and " + strugglingPlayer + " under sustained administrative pressure."
+        : "Filed testimony places " + controllingPlayer + " in control before the final positions were certified.";
+    } else if (cleanNote && context.comeback) {
+      findingSentence = "Filed testimony confirms a late reversal, making the table’s earlier confidence part of the evidence.";
+    } else if (cleanNote && context.close) {
+      findingSentence = "Filed testimony describes margins narrow enough to require both arithmetic and emotional supervision.";
+    } else if (cleanNote && context.rules) {
+      findingSentence = "The record includes a rules dispute; it has been noted without granting the rematch already being drafted.";
+    } else if (cleanNote && context.luck) {
+      findingSentence = "Filed testimony assigns a notable role to chance, an unregistered participant that declined to comment.";
+    } else if (cleanNote && context.alliance) {
+      findingSentence = "The record confirms diplomacy of a temporary nature and trust with an even shorter shelf life.";
+    } else if (cleanNote && context.newcomer) {
+      findingSentence = "The Commission notes a newcomer learning the machinery while the remaining parties were already exploiting it.";
+    } else if (cleanNote && context.refreshments) {
+      findingSentence = "The refreshments influenced morale and table space; their effect on strategy remains under review.";
+    } else if (cleanNote && context.mishap) {
+      findingSentence = "An unscheduled table incident entered the proceedings and was classified as environmental interference.";
+    } else if (cleanNote && Object.keys(context.assignments).length) {
+      const identities = Object.entries(context.assignments).map(([name, identity]) => name + " as " + identity);
+      findingSentence = "The field record identifies " + formatNaturalList(identities) + ", preserving the evening’s responsible parties.";
+    } else if (cleanNote) {
+      findingSentence = "The submitted field note was reviewed as context without adding events or claims not supported by the record.";
+    } else if (languagePack.known) {
+      findingSentence = chooseApproved(languagePack.findings, 1);
+    } else if (gameKnowledge && gameKnowledge.concepts?.length) {
+      const concepts = formatNaturalList(gameKnowledge.concepts.slice(0, 2));
+      findingSentence = "Reference materials identify " + concepts + " as part of " + gameLabel + "; only the filed result was treated as evidence.";
+    } else {
+      findingSentence = chooseApproved(languagePack.findings, 1);
+    }
+
+    const closingOptions = photoCount ? [
+      "Photographic evidence is attached, making future denials considerably less practical.",
+      "The visual record has been preserved for nostalgia and cross-examination."
+    ] : languagePack.closings;
+    const closingSentence = chooseApproved(closingOptions, 2);
+    const report = [resultSentence, findingSentence, closingSentence]
+      .join(" ").replace(/\s+/g, " ").trim();
+
+    const hasBadPattern = /\bwhile\b[^.!?]*\bwhile\b/i.test(report) ||
+      /specific result|completing the specific|finished \d+th/i.test(report) ||
+      report.length > 760;
+    if (!hasBadPattern) return report;
+
+    return resultSentence + " The Commission reviewed the table evidence and accepted the order as filed. " +
+      "Certification is complete; remaining objections may be expressed while packing the box.";
+  }
+
+  function getWinnerFirstVoicePack(game, winner, sharedWin) {
+    const gameLabel = "“" + game + "”";
+    const universalClosings = [
+      "The rematch may proceed; the result will not.",
+      "The table may remember it differently; the record does not.",
+      "The box is closed, and so is the argument.",
+      "Future games may alter the story; this one is finished."
+    ];
+    if (sharedWin) {
+      return {
+        leads: [
+          winner + " left " + gameLabel + " with shared control of the record and twice the paperwork anyone wanted.",
+          gameLabel + " ended with " + winner + " sharing the win and nobody successfully separating their claims.",
+          winner + " emerged from " + gameLabel + " tied at the top and equally responsible for the confusion that followed."
+        ],
+        closings: universalClosings
+      };
+    }
+
+    const packs = [
+      {
+        pattern: /blood rage/,
+        leads: [
+          winner + " emerged from " + gameLabel + " with the most glory and a victory that survived every possible recount.",
+          winner + " claimed the most glory in " + gameLabel + " and left the remaining clans to negotiate with the inevitable.",
+          gameLabel + " ended with " + winner + " holding the glory and everyone else preparing a more favorable saga."
+        ],
+        closings: [
+          "The clans may regroup; the result will not.",
+          "Ragnarök may return; this argument need not.",
+          "The sagas may grow in the retelling; the victory remains the same."
+        ]
+      },
+      {
+        pattern: /terraform|mars/,
+        leads: [
+          winner + " reshaped " + gameLabel + " more effectively than anyone else and left the red planet with an inconveniently clear winner.",
+          winner + " left " + gameLabel + " warmer, greener, and considerably less open to competing claims."
+        ],
+        closings: ["Mars remains unsettled; the result does not.", "The planet may need more work; the ruling does not."]
+      },
+      {
+        pattern: /wingspan/,
+        leads: [
+          winner + " left " + gameLabel + " with the strongest flock and a result that refused to migrate.",
+          gameLabel + " belonged to " + winner + ", whose flock made the final argument without raising its voice."
+        ],
+        closings: ["The birds may scatter; the result stays put.", "The habitats may reset; the pecking order will not."]
+      },
+      {
+        pattern: /unmatched/,
+        leads: [
+          winner + " left the " + gameLabel + " arena with the victory and no remaining obligation to explain the matchup.",
+          gameLabel + " produced one result nobody could counter: " + winner + " on top."
+        ],
+        closings: ["The fighters may reset their health; the record keeps the damage.", "The arena is cleared; the outcome remains."]
+      },
+      {
+        pattern: /catan/,
+        leads: [
+          winner + " claimed " + gameLabel + " with the strongest case on the island and a result no amount of sheep trading could undo.",
+          gameLabel + " ended with " + winner + " holding the victory and the island’s least negotiable claim."
+        ],
+        closings: ["The roads may be rebuilt; the result stands.", "The robber remains available for questioning; the winner does not."]
+      },
+      {
+        pattern: /ticket.*ride|ride.*ticket/,
+        leads: [
+          winner + " reached the end of " + gameLabel + " with the winning route and no interest in reopening the timetable.",
+          gameLabel + " delivered " + winner + " to victory while every competing route arrived somewhere less useful."
+        ],
+        closings: ["The trains may return to the box; the route to victory remains marked."]
+      },
+      {
+        pattern: /pandemic/,
+        leads: [
+          winner + " emerged from " + gameLabel + " with the result intact and the outbreak paperwork under control.",
+          gameLabel + " ended with " + winner + " holding the cleanest result in an otherwise contaminated file."
+        ],
+        closings: ["The cubes may return; this result is contained."]
+      },
+      {
+        pattern: /azul/,
+        leads: [
+          winner + " completed " + gameLabel + " with the cleanest claim on the wall and the least decorative argument against it.",
+          gameLabel + " left " + winner + " with the victory and everyone else inspecting the broken-tile penalty."
+        ],
+        closings: ["The wall may be rebuilt; the pattern of victory is fixed."]
+      },
+      {
+        pattern: /splendor/,
+        leads: [
+          winner + " left " + gameLabel + " with the prestige, the victory, and several nobles pretending they had always supported it.",
+          gameLabel + " ended with " + winner + " holding the richest claim and the only result worth displaying."
+        ],
+        closings: ["The gems may change hands; the prestige will not."]
+      },
+      {
+        pattern: /carcassonne/,
+        leads: [
+          winner + " assembled " + gameLabel + " into a victory no loose tile could explain away.",
+          gameLabel + " left " + winner + " with the strongest claim to the map and the meeples to prove it."
+        ],
+        closings: ["The map may change next time; this claim is settled."]
+      },
+      {
+        pattern: /root/,
+        leads: [
+          winner + " emerged from " + gameLabel + " with control of the woodland and the only revolt that survived the paperwork.",
+          gameLabel + " ended with " + winner + " holding the clearing and everyone else revising their faction strategy."
+        ],
+        closings: ["The woodland may revolt again; the result stands."]
+      },
+      {
+        pattern: /dune/,
+        leads: [
+          winner + " left " + gameLabel + " with the victory, the spice, and the least deniable claim on Arrakis.",
+          gameLabel + " bent to " + winner + ", which is more cooperation than Arrakis usually offers anyone."
+        ],
+        closings: ["The spice may flow; appeals need not."]
+      },
+      {
+        pattern: /everdell/,
+        leads: [
+          winner + " built " + gameLabel + " into the season’s strongest city and a victory ready for winter.",
+          gameLabel + " ended with " + winner + " holding the finest city and the critters’ official approval."
+        ],
+        closings: ["Winter may arrive; the result is already settled."]
+      },
+      {
+        pattern: /ark nova/,
+        leads: [
+          winner + " left " + gameLabel + " with the strongest zoo and a result too well enclosed to escape.",
+          gameLabel + " ended with " + winner + " holding the victory and the animals declining further comment."
+        ],
+        closings: ["The enclosures may expand; the result is contained."]
+      },
+      {
+        pattern: /spirit island/,
+        leads: [
+          winner + " emerged from " + gameLabel + " with the island intact and the strongest claim among the spirits.",
+          gameLabel + " answered to " + winner + ", and the invaders have been advised to reconsider their plans."
+        ],
+        closings: ["The spirits may rest; the result remains awake."]
+      },
+      {
+        pattern: /scythe/,
+        leads: [
+          winner + " left " + gameLabel + " with the strongest claim on the factory and the quietest need for excuses.",
+          gameLabel + " ended with " + winner + " ahead and the mechs suddenly much less conversational."
+        ],
+        closings: ["The mechs may park; the result keeps moving."]
+      },
+      {
+        pattern: /brass/,
+        leads: [
+          winner + " industrialized " + gameLabel + " into a victory sturdy enough to outlast the canals.",
+          gameLabel + " left " + winner + " with the strongest network and the least charitable balance sheet."
+        ],
+        closings: ["The markets may shift; this result is fully capitalized."]
+      },
+      {
+        pattern: /7 wonders|seven wonders/,
+        leads: [
+          winner + " left " + gameLabel + " with the finest civilization and a victory built to survive the ages.",
+          gameLabel + " added " + winner + " to the record and left antiquity to handle the paperwork."
+        ],
+        closings: ["The wonders may fade; the result has been preserved."]
+      },
+      {
+        pattern: /dominion/,
+        leads: [
+          winner + " turned " + gameLabel + " into a kingdom with one ruler and several increasingly unhelpful estates.",
+          gameLabel + " ended with " + winner + " holding the provinces and the only claim worth sleeving."
+        ],
+        closings: ["The kingdom may reshuffle; the victory will not."]
+      },
+      {
+        pattern: /clank/,
+        leads: [
+          winner + " escaped " + gameLabel + " with the victory and just enough noise left for everyone else to blame.",
+          gameLabel + " sent " + winner + " home with the prize and the dragon a list of unresolved concerns."
+        ],
+        closings: ["The dungeon may reset; the evidence escaped with the winner."]
+      },
+      {
+        pattern: /heat/,
+        leads: [
+          winner + " drove " + gameLabel + " to victory and left the rest of the field arguing with the racing line.",
+          gameLabel + " ended with " + winner + " ahead and the engine-temperature report conveniently unread."
+        ],
+        closings: ["The engines may cool; the result stays hot."]
+      },
+      {
+        pattern: /gloomhaven/,
+        leads: [
+          winner + " emerged from " + gameLabel + " with the victory and enough exhausted cards to document the journey.",
+          gameLabel + " left " + winner + " on top and the dungeon with several procedural complaints."
+        ],
+        closings: ["The mercenaries may recover; the result already has."]
+      },
+      {
+        pattern: /viticulture/,
+        leads: [
+          winner + " brought " + gameLabel + " to a finish with the finest vintage and the least sour result.",
+          gameLabel + " matured into a victory for " + winner + " while the remaining claims stayed on the vine."
+        ],
+        closings: ["The wine may age; the result is ready now."]
+      }
+    ];
+    const matched = packs.find(pack => pack.pattern.test(game.toLocaleLowerCase()));
+    return matched ? {
+      leads: matched.leads,
+      closings: matched.closings
+    } : {
+      leads: [
+        winner + " emerged from " + gameLabel + " with the victory and a result sturdy enough to survive the retelling.",
+        winner + " left " + gameLabel + " with the win and everyone else with a reason to schedule the rematch.",
+        gameLabel + " belonged to " + winner + ", at least according to the only version of events that made it into the record.",
+        winner + " settled " + gameLabel + " with the victory and no credible reason to reopen the argument."
+      ],
+      closings: universalClosings
+    };
+  }
+
+  function reviewContextSentence(context, winner) {
+    if (context.hasDominance || context.hasStruggle) {
+      const controllingPlayer = context.dominantPlayer || winner;
+      if (context.strugglingPlayer) {
+        return controllingPlayer + " controlled the night while " + context.strugglingPlayer + " searched for a way back that never arrived.";
+      }
+      return controllingPlayer + " took control early and never gave the table a convincing reason to expect otherwise.";
+    }
+    if (context.rules) return "A rules dispute entered the record and failed to change the result.";
+    if (context.luck) return "Luck made a suspiciously timely appearance and declined further questions.";
+    if (context.alliance) return "The alliances lasted exactly as long as they remained useful.";
+    if (context.newcomer) return "A first-time player learned the rules under the least forgiving conditions available.";
+    if (context.refreshments) return "The snacks influenced morale, table space, and possibly several decisions.";
+    if (context.mishap) return "An unexpected table incident joined the game and received no points.";
+    if (context.comeback) return "A late reversal turned the table’s early confidence into evidence against itself.";
+    if (context.close) return "The margin was narrow enough to keep the rematch argument alive.";
+    return "";
+  }
+
+  function reviewQualityIssues(report, game, results, note) {
+    const sentences = report.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+    const winners = new Set(results.filter(result => Number(result.place) === 1).map(result => result.name));
+    const otherNames = results.map(result => result.name).filter(name => !winners.has(name));
+    const mentionedOthers = otherNames.filter(name => new RegExp("\\b" + escapeContextPattern(name) + "\\b", "i").test(report));
+    const issues = [];
+    if (sentences.length < 2 || sentences.length > 3) issues.push("sentence-count");
+    if (report.trim().split(/\s+/).length > 72) issues.push("too-long");
+    if (!report.includes(game)) issues.push("missing-game");
+    if (![...winners].every(name => report.includes(name))) issues.push("missing-winner");
+    if (/\b(?:second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|runner-up|last place)\b/i.test(report)) issues.push("placement-recap");
+    if (/\bcommission\b|filed testimony|reference materials|specific result/i.test(report)) issues.push("stale-voice");
+    if (/\bwhile\b[^.!?]*\bwhile\b/i.test(report)) issues.push("repeated-connector");
+    if (!String(note || "").trim() && mentionedOthers.length) issues.push("irrelevant-players");
+    if (mentionedOthers.length > 1) issues.push("too-many-other-players");
+    return issues;
+  }
+
+  function generateCaseReport(game, results, note = "", photoCount = 0) {
+    const orderedResults = [...results].sort((left, right) =>
+      Number(left.place) - Number(right.place) || left.name.localeCompare(right.name)
+    );
+    const winners = orderedResults.filter(result => Number(result.place) === 1);
+    const winner = formatNaturalList(winners.map(result => result.name));
+    const sharedWin = winners.length > 1;
+    const cleanNote = String(note || "").trim().slice(0, 500);
+    const context = interpretGameContext(cleanNote, game, orderedResults);
+    const pack = getWinnerFirstVoicePack(game, winner, sharedWin);
+    const previousReports = games
+      .filter(gameRecord => gameRecord.id !== editingGameId && typeof gameRecord.report === "string")
+      .map(gameRecord => gameRecord.report.toLocaleLowerCase());
+    const chooseFresh = (options, offset = 0) => [...options].map((option, index) => ({
+      option,
+      repeats: previousReports.filter(report => report.includes(option.toLocaleLowerCase())).length,
+      order: index
+    })).sort((left, right) => left.repeats - right.repeats || left.order - right.order)[0]?.option || "";
+
+    const lead = chooseFresh(pack.leads, 1);
+    const contextSentence = cleanNote ? reviewContextSentence(context, winner) : "";
+    const photoClosings = [
+      "The photos may invite new theories; the result remains unchanged.",
+      "The visual evidence has been preserved, which should shorten the next argument."
+    ];
+    const closing = chooseFresh(photoCount ? photoClosings : pack.closings, 2);
+    const report = [lead, contextSentence, closing].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+    const issues = reviewQualityIssues(report, game, orderedResults, cleanNote);
+    if (!issues.length) return report;
+
+    const fallback = sharedWin
+      ? winner + " left “" + game + "” with shared control of the record and twice the paperwork anyone wanted. The rematch may proceed; the result will not."
+      : winner + " emerged from “" + game + "” with the victory and a result sturdy enough to survive the retelling. The rematch may proceed; the result will not.";
+    return fallback;
   }
 
   function formatGameDate(recordedAt) {
@@ -6027,10 +7029,16 @@
   }
 
   document.addEventListener("keydown", event => {
+    const rulingBackdrop = document.getElementById("rulingRevealBackdrop");
     const achievementBackdrop = document.getElementById("achievementDetailBackdrop");
     const lightboxBackdrop = document.getElementById("memoryLightboxBackdrop");
     const deleteBackdrop = document.getElementById("deleteConfirmBackdrop");
     const playerBackdrop = document.getElementById("playerModalBackdrop");
+    if (!rulingBackdrop.hidden) {
+      if (event.key === "Escape") closeRulingReveal();
+      keepFocusInside(event, document.getElementById("rulingReveal"));
+      return;
+    }
     if (!achievementBackdrop.hidden) {
       if (event.key === "Escape") closeAchievementDetail();
       keepFocusInside(event, document.getElementById("achievementDetailDialog"));
@@ -6104,6 +7112,78 @@
     return "";
   }
 
+  function getLatestUpsetFact(sortedPlayers) {
+    const latestGame = games[0];
+    if (!latestGame) return null;
+    const rankByPlayer = new Map(sortedPlayers.map((player, index) => [player.id, index + 1]));
+    const winners = latestGame.results.filter(result => Number(result.place) === 1);
+    const defeated = latestGame.results.filter(result => Number(result.place) > 1);
+    if (winners.length > 1) {
+      return {
+        value: "Shared control",
+        detail: formatNaturalList(winners.map(result => result.name)) + " tied atop " + latestGame.game + "."
+      };
+    }
+    const upset = winners.flatMap(winner => defeated.map(loser => ({ winner, loser })))
+      .filter(pair => (rankByPlayer.get(pair.winner.playerId) || 0) > (rankByPlayer.get(pair.loser.playerId) || 0))
+      .sort((a, b) =>
+        ((rankByPlayer.get(b.winner.playerId) || 0) - (rankByPlayer.get(b.loser.playerId) || 0)) -
+        ((rankByPlayer.get(a.winner.playerId) || 0) - (rankByPlayer.get(a.loser.playerId) || 0))
+      )[0];
+
+    if (!upset) {
+      const winnerNames = winners.map(result => result.name).join(" & ") || "The favorite";
+      return { value: "Order maintained", detail: winnerNames + " held serve in " + latestGame.game + "." };
+    }
+
+    return {
+      value: upset.winner.name + " over " + upset.loser.name,
+      detail: "Rank #" + rankByPlayer.get(upset.winner.playerId) + " toppled rank #" +
+        rankByPlayer.get(upset.loser.playerId) + " in " + latestGame.game + "."
+    };
+  }
+
+  function getRivalryWatchFact() {
+    const pairings = new Map();
+    games.forEach(gameRecord => {
+      const entrants = gameRecord.results.filter(result => players.some(player => player.id === result.playerId));
+      for (let left = 0; left < entrants.length; left += 1) {
+        for (let right = left + 1; right < entrants.length; right += 1) {
+          const pair = [entrants[left], entrants[right]].sort((a, b) => a.playerId.localeCompare(b.playerId));
+          const key = pair[0].playerId + "|" + pair[1].playerId;
+          const record = pairings.get(key) || { names: [pair[0].name, pair[1].name], meetings: 0, wins: [0, 0] };
+          record.meetings += 1;
+          if (Number(pair[0].place) < Number(pair[1].place)) record.wins[0] += 1;
+          if (Number(pair[1].place) < Number(pair[0].place)) record.wins[1] += 1;
+          pairings.set(key, record);
+        }
+      }
+    });
+
+    const rivalry = [...pairings.values()].sort((a, b) =>
+      b.meetings - a.meetings || Math.abs(a.wins[0] - a.wins[1]) - Math.abs(b.wins[0] - b.wins[1])
+    )[0];
+    if (!rivalry || rivalry.meetings < 2) return null;
+    return {
+      value: rivalry.names.join(" vs. "),
+      detail: rivalry.meetings + " meetings · series " + rivalry.wins[0] + "–" + rivalry.wins[1]
+    };
+  }
+
+  function getNextMilestoneFact() {
+    const thresholds = [1, 5, 10, 25, 50, 100];
+    const candidates = players.filter(player => !player.archived).map(player => {
+      const target = thresholds.find(value => value > player.wins) || Math.ceil((player.wins + 1) / 100) * 100;
+      return { player, target, remaining: target - player.wins };
+    }).sort((a, b) => a.remaining - b.remaining || b.player.wins - a.player.wins || a.player.name.localeCompare(b.player.name));
+    const next = candidates[0];
+    if (!next) return null;
+    return {
+      value: next.player.name + " · " + next.target + " wins",
+      detail: next.remaining === 1 ? "One victory away from official recognition." : next.remaining + " victories away."
+    };
+  }
+
   function renderHomePresentation(sortedPlayers) {
     const leader = games.length ? sortedPlayers[0] : null;
     const leaderName = document.getElementById("homeLeaderName");
@@ -6120,6 +7200,23 @@
     leaderButton.disabled = !leader;
     leaderButton.onclick = leader ? () => openPlayerModal(leader.id) : null;
     leaderBadges.innerHTML = "";
+
+    const latestGame = games[0];
+    document.getElementById("commandCenterBrief").textContent = latestGame
+      ? "The latest ruling is in from " + latestGame.game + ". File tonight’s result to move the league forward."
+      : "File the final standings and let the Commission issue its first official ruling.";
+
+    const upset = getLatestUpsetFact(sortedPlayers);
+    document.getElementById("commandUpsetValue").textContent = upset ? upset.value : "Awaiting evidence";
+    document.getElementById("commandUpsetDetail").textContent = upset ? upset.detail : "Log a game to open the case.";
+
+    const rivalry = getRivalryWatchFact();
+    document.getElementById("commandRivalryValue").textContent = rivalry ? rivalry.value : "No rivalry filed";
+    document.getElementById("commandRivalryDetail").textContent = rivalry ? rivalry.detail : "Two meetings will put a matchup on watch.";
+
+    const milestone = getNextMilestoneFact();
+    document.getElementById("commandMilestoneValue").textContent = milestone ? milestone.value : "First victory";
+    document.getElementById("commandMilestoneDetail").textContent = milestone ? milestone.detail : "Every dynasty starts somewhere.";
 
     if (leader) {
       const badges = getPlayerBadges(leader, 1);
@@ -6148,7 +7245,6 @@
     }
 
     const longestStreak = getLongestWinningStreak();
-    const latestGame = games[0];
     const badgeCount = players.reduce((total, player, index) =>
       total + getPlayerBadges(player, sortedPlayers.indexOf(player) + 1).length, 0
     );
@@ -6357,10 +7453,10 @@
       checkbox.className = "participant";
       checkbox.value = player.id;
 
-      checkbox.addEventListener(
-        "change",
-        updateFinishingOrder
-      );
+      checkbox.addEventListener("change", () => {
+        updateFinishingOrder();
+        scheduleGameDraftSave();
+      });
 
       label.appendChild(checkbox);
       label.appendChild(
@@ -6689,6 +7785,7 @@
     }
 
     renderMemoryPhotoPreview();
+    renderRecentGames();
     renderHomePresentation(sortedPlayers);
     renderAchievements(sortedPlayers);
     syncMobileTabState();
@@ -6753,6 +7850,17 @@
   }
 
   document.getElementById("buildVersionLabel").textContent = BUILD_VERSION;
+  document.getElementById("gameName").addEventListener("input", scheduleGameDraftSave);
+  document.getElementById("gameNotes").addEventListener("input", scheduleGameDraftSave);
+  document.getElementById("rulingRevealClose").addEventListener("click", () => closeRulingReveal());
+  document.getElementById("rulingRevealMemory").addEventListener("click", () => {
+    closeRulingReveal(false);
+    window.location.hash = "historyPanel";
+    document.getElementById("historyPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.getElementById("rulingRevealBackdrop").addEventListener("click", event => {
+    if (event.target.id === "rulingRevealBackdrop") closeRulingReveal();
+  });
   document.getElementById("applyUpdateButton").addEventListener("click", applyAvailableUpdate);
   document.getElementById("dismissUpdateButton").addEventListener("click", () => {
     const banner = document.getElementById("updateBanner");
@@ -6769,6 +7877,7 @@
   saveData();
   window.addEventListener("hashchange", syncMobileTabState);
   render();
+  restoreGameDraft();
   window.setTimeout(checkForFedUpdate, 1200);
 </script>
 
